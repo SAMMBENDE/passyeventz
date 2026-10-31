@@ -52,13 +52,16 @@ MongoDB must support transactions (as Atlas does). Pending bookings expire 24
 hours after creation and no longer reserve inventory; expired bookings remain
 visible in the admin history.
 
-Vercel runs the expiration endpoint hourly using `vercel.json`. Configure
+Vercel runs the expiration endpoint daily at 00:00 UTC using `vercel.json`,
+which is compatible with the Hobby plan. Vercel may run Hobby cron jobs at any
+time within the scheduled hour. Configure
 `CRON_SECRET` as a private random secret of at least 32 bytes in the deployment
 environment (for example, generate one locally with `openssl rand -base64 32`).
 The cron route rejects requests without its bearer token. Inventory checks and
-admin booking actions also expire stale holds, so a delayed scheduled run does
-not keep old pending bookings from consuming stock. An hourly schedule requires
-a Vercel plan or external scheduler that supports hourly execution.
+admin booking actions also expire stale holds, and inventory availability
+ignores holds older than 24 hours, so a delayed scheduled run does not keep old
+pending bookings from consuming stock. An hourly schedule requires a Vercel
+plan or external scheduler that supports hourly execution.
 
 ## Deposit payments
 
@@ -87,7 +90,7 @@ exercise the full create, pay, webhook, and refund paths before enabling live
 payments. The public return page is informational; provider webhooks are the
 source of truth for payment confirmation.
 
-The hourly expiration job also expires payment links in the database. Stripe
+The daily expiration job also expires payment links in the database. Stripe
 checkout sessions have a matching provider expiry; PayPal orders that return
 after the booking/payment deadline are not captured.
 
