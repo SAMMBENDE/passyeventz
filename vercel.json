@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/expire-pending-bookings",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
