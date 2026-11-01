@@ -2,55 +2,39 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarCheck2, HeartHandshake, Palette, Sparkles, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const services = [
   {
-    number: "01",
     title: "Mariages & cérémonies",
-    description:
-      "Décors floraux, installations de cérémonie, tables de réception et atmosphères sur mesure pour célébrer votre union avec élégance.",
+    description: "Des décors d’exception pour vos plus beaux moments.",
     image: "/images/prestations/mariage.jpg",
     imageAlt: "Décoration de mariage aux drapés ivoire et détails dorés",
     imagePosition: "50% 50%",
-    icon: Sparkles,
   },
   {
-    number: "02",
     title: "Événements familiaux",
-    description:
-      "Baptêmes, anniversaires et galas intimes imaginés comme des expériences chaleureuses, personnalisées et mémorables.",
+    description: "Des célébrations uniques, pensées dans les moindres détails.",
     image: "/images/prestations/famille.jpg",
     imageAlt: "Décor de baby shower pastel réalisé par PassyEventz",
     imagePosition: "55% 48%",
-    detailImage: "/images/prestations/famille-anniversaire.jpg",
-    detailImageAlt: "Table de réception familiale aux accents dorés",
-    icon: HeartHandshake,
   },
   {
-    number: "03",
     title: "Scénographie & styling",
-    description:
-      "Ambiances raffinées, personnalisation chromatique et mise en scène immersive pour des lieux uniques et sophistiqués.",
+    description: "Des ambiances raffinées et entièrement personnalisées.",
     image: "/images/prestations/decor.jpg",
     imageAlt: "Scénographie florale et table de réception élégante",
     imagePosition: "52% 48%",
-    detailImage: "/images/prestations/scenographie.jpg",
-    detailImageAlt: "Mise en scène de cérémonie et décor de réception",
-    icon: Palette,
   },
   {
-    number: "04",
     title: "Location premium",
-    description:
-      "Mobilier design, vaisselle, accessoires décoratifs et éléments d’atelier sélectionnés pour des installations impeccables.",
+    description: "Des pièces élégantes pour sublimer vos réceptions.",
     image: "/images/prestations/location.jpg",
     imageAlt: "Verres taillés et art de la table pour une réception premium",
     imagePosition: "50% 48%",
-    icon: CalendarCheck2,
   },
 ];
 
@@ -141,55 +125,38 @@ export function ServicesGrid() {
   return (
     <div
       ref={gridRef}
-      className="mt-10 grid grid-cols-1 gap-5 md:mt-14 md:grid-cols-2 md:gap-6 lg:grid-cols-4"
+      className="mt-10 grid grid-cols-1 gap-5 md:mt-14 md:grid-cols-2 md:gap-6 xl:grid-cols-4"
     >
-      {services.map(({ number, title, description, image, imageAlt, imagePosition, detailImage, detailImageAlt, icon: Icon }) => (
+      {services.map(({ title, description, image, imageAlt, imagePosition }) => (
         <article
           key={title}
           className="service-card group flex flex-col overflow-hidden rounded-[1.55rem] border border-[rgba(8,7,6,0.08)] bg-white shadow-[0_16px_38px_rgba(8,7,6,0.045)] transition-shadow duration-300 hover:shadow-[0_22px_48px_rgba(8,7,6,0.09)] md:rounded-[1.7rem]"
         >
-          <div className="relative order-1 aspect-video overflow-hidden bg-panel">
+          <div className="relative order-1 aspect-9/16 overflow-hidden bg-panel md:aspect-5/7 lg:aspect-3/4 xl:aspect-9/17">
             <Image
               src={image}
               alt={imageAlt}
               fill
               sizes="(min-width: 1280px) 286px, (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 32px)"
-              className="service-card__image object-cover transition-transform duration-700 ease-out motion-reduce:transition-none md:group-hover:scale-[1.035]"
+              className="service-card__image object-cover transition-transform duration-700 ease-out motion-reduce:transition-none lg:group-hover:scale-[1.035]"
               style={{ objectPosition: imagePosition }}
             />
-            <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/25 via-transparent to-black/4" />
-            <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/35 bg-black/20 px-3 py-1.5 text-[0.62rem] font-medium uppercase tracking-[0.18em] text-white backdrop-blur-sm">
-              <span>{number}</span>
-              <span aria-hidden="true" className="h-px w-4 bg-light-gold" />
-              <Icon aria-hidden="true" className="h-3.5 w-3.5 text-light-gold" />
-            </div>
-            {detailImage && detailImageAlt ? (
-              <div className="absolute bottom-3 right-3 h-[4.3rem] w-22 overflow-hidden rounded-xl border-2 border-white/90 shadow-[0_8px_24px_rgba(8,7,6,0.22)] sm:bottom-4 sm:right-4 sm:h-[5.1rem] sm:w-26">
-                <Image
-                  src={detailImage}
-                  alt={detailImageAlt}
-                  fill
-                  sizes="104px"
-                  className="object-cover"
-                />
-              </div>
-            ) : null}
           </div>
 
-          <div className="order-2 flex min-h-62 flex-col px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6">
-            <h3 className="max-w-[15ch] font-serif text-[1.8rem] leading-[1.02] tracking-tight text-foreground sm:text-[1.95rem] lg:text-[1.7rem] xl:text-[1.9rem]">
+          <div className="order-2 flex min-h-41 flex-col px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
+            <h3 className="max-w-[15ch] font-serif text-[1.65rem] leading-[1.02] tracking-tight text-foreground sm:text-[1.8rem] lg:text-[1.55rem] xl:text-[1.7rem]">
               {title}
             </h3>
-            <p className="mt-3 text-[0.9rem] leading-[1.75] text-muted sm:text-[0.94rem]">
+            <p className="mt-2 text-[0.84rem] leading-normal text-muted sm:text-[0.88rem]">
               {description}
             </p>
             <Link
               href="/devis"
               aria-label={`Découvrir ${title}`}
-              className="mt-auto inline-flex w-fit items-center gap-2 pt-5 text-[0.78rem] font-semibold uppercase tracking-[0.13em] text-[#9a6b22] transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-4"
+              className="mt-auto inline-flex w-fit items-center gap-1.5 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.15em] text-[#9a6b22] transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-4"
             >
               Découvrir
-              <ArrowUpRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
           </div>
         </article>
