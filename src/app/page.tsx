@@ -20,25 +20,25 @@ import { SiteHeader } from "@/components/site-header";
 
 const gallery = [
   {
-    title: "Scénographie de mariage terracotta",
+    title: "Scénographie Terracotta",
     category: "Mariage",
     image: "/images/realisations/scene.webp",
     imageAlt: "Table d’honneur et décor de mariage aux drapés terracotta",
   },
   {
-    title: "Table d’honneur orange & or",
+    title: "Table d’honneur ",
     category: "Art de la table",
     image: "/images/realisations/banquet-orange-gold.webp",
     imageAlt: "Table de réception orange avec compositions florales et détails dorés",
   },
   {
-    title: "Table noire & or aux détails dorés",
+    title: "Table aux détails dorés",
     category: "Art de la table",
     image: "/images/realisations/table-noir-or.webp",
     imageAlt: "Table de réception noire et or avec compositions florales et verrerie",
   },
   {
-    title: "Réception en rouge & ivoire",
+    title: "Réception Coporate",
     category: "Réception",
     image: "/images/realisations/table-rouge-ivoire.webp",
     imageAlt: "Tables de réception ivoire décorées de rubans rouge profond",
@@ -50,7 +50,7 @@ const gallery = [
     imageAlt: "Arche de cérémonie ornée de fleurs blanches et de roses orange",
   },
   {
-    title: "Une réception élégante et chaleureuse",
+    title: "Réception Élégante",
     category: "Événement",
     image: "/images/realisations/reception.webp",
     imageAlt: "Salle de réception avec tables blanches, accents rouges et centres de table dorés",
@@ -74,13 +74,13 @@ const testimonials = [
   {
     quote:
       "L’équipe a su écouter nos envies et proposer une ambiance premium sans jamais perdre la cohérence du projet. Une vraie signature.",
-    author: "Sophie L.",
+    author: "Bonny M.",
     context: "Cérémonie d’entreprise",
   },
   {
     quote:
       "Le service de location était impeccable, les finitions parfaites et le conseil très précieux pour organiser un événement serein.",
-    author: "Élodie M.",
+    author: "Ana Rodriguez",
     context: "Anniversaire privé",
   },
 ];

@@ -15,10 +15,10 @@ const sansFont = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "PassyEventz | Événements premium à Paris",
+  title: "PassyEventz | Décoration & Événementiel haut de gamme",
   description:
-    "PassyEventz conçoit des mariages, séminaires et événements privés avec décoration, location de mobilier et scénographie sur mesure en France.",
-};
+    "Basée à Lyon, PassyEventz sublime vos mariages, séminaires et événements privés en France et à l’étranger : décoration, location de mobilier et de vaisselle, scénographie sur mesure.",
+  };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
