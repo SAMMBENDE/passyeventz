@@ -9,32 +9,32 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const services = [
   {
-    title: "Mariages & fiancailles",
-    description: "Des décors sur mesure pour vos plus beaux moments.",
+    title: "Mariages",
+    description: "Le mariage - Des décors sur mesure pour vos plus beaux moments.",
     image: "/images/prestations/mariage.jpg",
     imageAlt: "Décoration de mariage aux drapés ivoire et détails dorés",
     imagePosition: "50% 50%",
   },
   {
-    title: "Événements familiaux",
-    description: "Anniversaires, baptêmes & baby showers pensées dans les moindres détails.",
+    title: "Événements privés",
+    description: "Anniversaires, baptêmes et baby showers sublimés par une décoration sur mesure.",
     image: "/images/prestations/famille.jpg",
     imageAlt: "Décor de baby shower pastel réalisé par PassyEventz",
     imagePosition: "55% 48%",
   },
   {
-    title: "Chic & glamour",
-    description: "Des ambiances raffinées et entièrement personnalisées.",
+    title: "Événements corporate",
+    description: "Des événements d’entreprise orchestrés avec élégance et raffinement.",
     image: "/images/prestations/decor.jpg",
     imageAlt: "Scénographie florale et table de réception élégante",
     imagePosition: "52% 48%",
   },
   {
-    title: "Qualité premium",
-    description: "Des pièces élégantes pour sublimer vos réceptions.",
-    image: "/images/prestations/location.jpg",
-    imageAlt: "Verres taillés et art de la table pour une réception premium",
-    imagePosition: "50% 48%",
+    title: "Fiançailles & demandes en mariage",
+    description: "Des mises en scène raffinées pour célébrer vos plus belles promesses.",
+    image: "/images/prestations/fiancailles.webp",
+    imageAlt: "Une bague de fiançailles mise en lumière lors d’une réception chaleureuse",
+    imagePosition: "50% 45%",
   },
 ];
 
@@ -125,19 +125,22 @@ export function ServicesGrid() {
   return (
     <div
       ref={gridRef}
-      className="mt-10 grid grid-cols-1 gap-5 md:mt-14 md:grid-cols-2 md:gap-6 xl:grid-cols-4"
+      role="region"
+      aria-label="Prestations — faites défiler horizontalement sur mobile"
+      tabIndex={0}
+      className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-4 pb-4 touch-pan-x md:mx-0 md:mt-14 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4"
     >
       {services.map(({ title, description, image, imageAlt, imagePosition }) => (
         <article
           key={title}
-          className="service-card group flex flex-col overflow-hidden rounded-[1.55rem] border border-[rgba(8,7,6,0.08)] bg-white shadow-[0_16px_38px_rgba(8,7,6,0.045)] transition-shadow duration-300 hover:shadow-[0_22px_48px_rgba(8,7,6,0.09)] md:rounded-[1.7rem]"
+          className="service-card group flex w-[min(84vw,22rem)] shrink-0 snap-start flex-col overflow-hidden rounded-[1.55rem] border border-[rgba(8,7,6,0.08)] bg-white shadow-[0_16px_38px_rgba(8,7,6,0.045)] transition-shadow duration-300 hover:shadow-[0_22px_48px_rgba(8,7,6,0.09)] md:w-auto md:shrink md:snap-none md:rounded-[1.7rem]"
         >
-          <div className="relative order-1 aspect-9/16 overflow-hidden bg-panel md:aspect-5/7 lg:aspect-3/4 xl:aspect-9/17">
+          <div className="relative order-1 aspect-4/3 overflow-hidden bg-panel md:aspect-5/7 lg:aspect-3/4 xl:aspect-9/17">
             <Image
               src={image}
               alt={imageAlt}
               fill
-              sizes="(min-width: 1280px) 286px, (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 32px)"
+              sizes="(min-width: 1280px) 286px, (min-width: 768px) calc((100vw - 72px) / 2), 84vw"
               className="service-card__image object-cover transition-transform duration-700 ease-out motion-reduce:transition-none lg:group-hover:scale-[1.035]"
               style={{ objectPosition: imagePosition }}
             />
