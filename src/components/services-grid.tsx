@@ -9,28 +9,28 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const services = [
   {
-    title: "Mariages & cérémonies",
-    description: "Des décors d’exception pour vos plus beaux moments.",
+    title: "Mariages & fiancailles",
+    description: "Des décors sur mesure pour vos plus beaux moments.",
     image: "/images/prestations/mariage.jpg",
     imageAlt: "Décoration de mariage aux drapés ivoire et détails dorés",
     imagePosition: "50% 50%",
   },
   {
     title: "Événements familiaux",
-    description: "Des célébrations uniques, pensées dans les moindres détails.",
+    description: "Anniversaires, baptêmes & baby showers pensées dans les moindres détails.",
     image: "/images/prestations/famille.jpg",
     imageAlt: "Décor de baby shower pastel réalisé par PassyEventz",
     imagePosition: "55% 48%",
   },
   {
-    title: "Scénographie & styling",
+    title: "Chic & glamour",
     description: "Des ambiances raffinées et entièrement personnalisées.",
     image: "/images/prestations/decor.jpg",
     imageAlt: "Scénographie florale et table de réception élégante",
     imagePosition: "52% 48%",
   },
   {
-    title: "Location premium",
+    title: "Qualité premium",
     description: "Des pièces élégantes pour sublimer vos réceptions.",
     image: "/images/prestations/location.jpg",
     imageAlt: "Verres taillés et art de la table pour une réception premium",

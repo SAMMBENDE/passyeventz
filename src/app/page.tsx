@@ -38,7 +38,7 @@ const gallery = [
     imageAlt: "Table de réception noire et or avec compositions florales et verrerie",
   },
   {
-    title: "Réception Coporate",
+    title: "Réception Corporate",
     category: "Réception",
     image: "/images/realisations/table-rouge-ivoire.webp",
     imageAlt: "Tables de réception ivoire décorées de rubans rouge profond",
