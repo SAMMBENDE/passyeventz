@@ -128,7 +128,7 @@ export function ServicesGrid() {
       role="region"
       aria-label="Prestations — faites défiler horizontalement sur mobile"
       tabIndex={0}
-      className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-4 pb-4 touch-pan-x md:mx-0 md:mt-14 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4"
+      className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-4 pb-4 md:mx-0 md:mt-14 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4"
     >
       {services.map(({ title, description, image, imageAlt, imagePosition }) => (
         <article
