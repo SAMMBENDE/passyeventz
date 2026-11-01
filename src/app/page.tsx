@@ -19,12 +19,42 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
 const gallery = [
-  { title: "Mariage intimiste à Paris", category: "Mariage", image: "/images/PE-Marriage_1.png" },
-  { title: "Cérémonie sous les étoiles", category: "Événement", image: "/images/PE6.jpeg" },
-  { title: "Ambiance de soirée chic", category: "Soirée", image: "/images/PE.4.jpeg" },
-  { title: "Décoration florale signature", category: "Floral", image: "/images/PE7.png" },
-  { title: "Table d’atelier luxe", category: "Location", image: "/images/PE8.png" },
-  { title: "Scénographie événementielle", category: "Corporate", image: "/images/PE.3.jpeg" },
+  {
+    title: "Scénographie de mariage terracotta",
+    category: "Mariage",
+    image: "/images/realisations/scene.webp",
+    imageAlt: "Table d’honneur et décor de mariage aux drapés terracotta",
+  },
+  {
+    title: "Table d’honneur orange & or",
+    category: "Art de la table",
+    image: "/images/realisations/banquet-orange-gold.webp",
+    imageAlt: "Table de réception orange avec compositions florales et détails dorés",
+  },
+  {
+    title: "Table noire & or aux détails dorés",
+    category: "Art de la table",
+    image: "/images/realisations/table-noir-or.webp",
+    imageAlt: "Table de réception noire et or avec compositions florales et verrerie",
+  },
+  {
+    title: "Réception en rouge & ivoire",
+    category: "Réception",
+    image: "/images/realisations/table-rouge-ivoire.webp",
+    imageAlt: "Tables de réception ivoire décorées de rubans rouge profond",
+  },
+  {
+    title: "Arche florale de cérémonie",
+    category: "Décoration florale",
+    image: "/images/realisations/arche-florale.webp",
+    imageAlt: "Arche de cérémonie ornée de fleurs blanches et de roses orange",
+  },
+  {
+    title: "Une réception élégante et chaleureuse",
+    category: "Événement",
+    image: "/images/realisations/reception.webp",
+    imageAlt: "Salle de réception avec tables blanches, accents rouges et centres de table dorés",
+  },
 ];
 
 const process = [
@@ -208,7 +238,7 @@ export default function Home() {
                   <div className="relative h-80 overflow-hidden">
                     <Image
                       src={item.image}
-                      alt={item.title}
+                      alt={item.imageAlt}
                       fill
                       sizes="(min-width: 1280px) 389px, (min-width: 1024px) calc((100vw - 88px) / 2), (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 32px)"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
