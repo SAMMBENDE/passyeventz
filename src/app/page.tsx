@@ -13,45 +13,52 @@ import {
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/ui/fade-in";
 import { MobileHeroVideo } from "@/components/mobile-hero-video";
+import { RealisationsShowcase, type RealisationItem } from "@/components/realisations-showcase";
 import { ServicesGrid } from "@/components/services-grid";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
-const gallery = [
+const gallery: RealisationItem[] = [
   {
     title: "Scénographie Terracotta",
     category: "Mariage",
+    description: "Une mise en scène chaleureuse, ponctuée de fleurs et de détails dorés.",
     image: "/images/realisations/scene.webp",
     imageAlt: "Table d’honneur et décor de mariage aux drapés terracotta",
   },
   {
     title: "Table d’honneur ",
     category: "Art de la table",
+    description: "Une table lumineuse où les compositions florales rencontrent l’or.",
     image: "/images/realisations/banquet-orange-gold.webp",
     imageAlt: "Table de réception orange avec compositions florales et détails dorés",
   },
   {
     title: "Table aux détails dorés",
     category: "Art de la table",
+    description: "Une composition raffinée de verrerie, de fleurs et de reflets dorés.",
     image: "/images/realisations/table-noir-or.webp",
     imageAlt: "Table de réception noire et or avec compositions florales et verrerie",
   },
   {
     title: "Réception Corporate",
     category: "Réception",
+    description: "Une réception élégante pensée autour du contraste rouge et ivoire.",
     image: "/images/realisations/table-rouge-ivoire.webp",
     imageAlt: "Tables de réception ivoire décorées de rubans rouge profond",
   },
   {
     title: "Arche florale de cérémonie",
     category: "Décoration florale",
+    description: "Une arche fleurie pour accueillir les plus beaux instants.",
     image: "/images/realisations/arche-florale.webp",
     imageAlt: "Arche de cérémonie ornée de fleurs blanches et de roses orange",
   },
   {
     title: "Réception Élégante",
     category: "Événement",
+    description: "Une atmosphère conviviale, dressée avec soin jusque dans les détails.",
     image: "/images/realisations/reception.webp",
     imageAlt: "Salle de réception avec tables blanches, accents rouges et centres de table dorés",
   },
@@ -232,7 +239,9 @@ export default function Home() {
               description="Créez des scènes à forte signature visuelle, appuyées par une palette raffinée, des textures élégantes et des détails soigneusement orchestrés."
             />
 
-            <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <RealisationsShowcase items={gallery} />
+
+            <div className="mt-14 hidden gap-6 md:grid md:grid-cols-2 xl:grid-cols-3">
               {gallery.map((item) => (
                 <FadeIn key={item.title} className="group overflow-hidden rounded-4xl border border-[rgba(8,7,6,0.06)] bg-white shadow-[0_18px_40px_rgba(8,7,6,0.04)]">
                   <div className="relative h-80 overflow-hidden">
