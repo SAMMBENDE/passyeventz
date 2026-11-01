@@ -243,7 +243,6 @@ export default function Home() {
                       sizes="(min-width: 1280px) 389px, (min-width: 1024px) calc((100vw - 88px) / 2), (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 32px)"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,7,6,0.08),rgba(8,7,6,0.56))]" />
                     <div className="absolute left-5 top-5 rounded-full border border-[rgba(244,213,138,0.5)] bg-[rgba(8,7,6,0.28)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.18em] text-background backdrop-blur-sm">
                       {item.category}
                     </div>
