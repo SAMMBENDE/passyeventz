@@ -4,9 +4,7 @@ import {
   ArrowRight,
   BadgeCheck,
   CalendarCheck2,
-  HeartHandshake,
   MessageSquareText,
-  Palette,
   Sparkles,
   Star,
   WandSparkles,
@@ -15,36 +13,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/ui/fade-in";
 import { MobileHeroVideo } from "@/components/mobile-hero-video";
+import { ServicesGrid } from "@/components/services-grid";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-
-const services = [
-  {
-    title: "Mariages & cérémonies",
-    description:
-      "Décors floraux, installations de cérémonie, tables de réception et atmosphères sur mesure pour célébrer votre union avec élégance.",
-    icon: Sparkles,
-  },
-  {
-    title: "Événements familiaux",
-    description:
-      "Baptêmes, anniversaires et galas intimes imaginés comme des expériences chaleureuses, personnalisées et mémorables.",
-    icon: HeartHandshake,
-  },
-  {
-    title: "Scénographie & styling",
-    description:
-      "Ambiances raffinées, personnalisation chromatique et mise en scène immersive pour des lieux uniques et sophistiqués.",
-    icon: Palette,
-  },
-  {
-    title: "Location premium",
-    description:
-      "Mobilier design, vaisselle, accessoires décoratifs et éléments d’atelier sélectionnés pour des installations impeccables.",
-    icon: CalendarCheck2,
-  },
-];
 
 const gallery = [
   { title: "Mariage intimiste à Paris", category: "Mariage", image: "/images/PE-Marriage_1.png" },
@@ -155,12 +127,12 @@ export default function Home() {
             <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,7,6,0.88)_0%,rgba(8,7,6,0.68)_32%,rgba(8,7,6,0.42)_100%)]" />
           </div>
 
-          <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-28">
-            <FadeIn className="max-w-2xl">
+          <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12 lg:px-8 lg:py-28">
+            <FadeIn className="order-2 max-w-2xl lg:order-1">
               <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.34em] text-light-gold">
                 Votre événement. Notre signature.
               </p>
-              <h1 className="max-w-xl text-5xl leading-[0.9] text-background sm:text-6xl lg:text-7xl">
+              <h1 className="max-w-xl text-4xl leading-[0.9] text-background sm:text-5xl lg:text-7xl">
                 Chaque détail compte. Chaque événement devient une expérience.
               </h1>
               <p className="mt-6 max-w-xl text-base leading-8 text-[rgba(255,249,239,0.78)] sm:text-lg">
@@ -186,7 +158,7 @@ export default function Home() {
               </div>
             </FadeIn>
 
-            <FadeIn className="relative flex items-end justify-center lg:justify-end">
+            <FadeIn className="relative order-1 flex items-end justify-center lg:order-2 lg:justify-end">
               <div className="w-full max-w-md rounded-4xl border border-[rgba(244,213,138,0.28)] bg-[rgba(255,249,239,0.04)] p-4 shadow-(--shadow) backdrop-blur-sm">
                 <div className="overflow-hidden rounded-3xl border border-[rgba(255,249,239,0.12)]">
                   <Image
@@ -194,7 +166,7 @@ export default function Home() {
                     alt="Scénographie d’événement luxe"
                     width={640}
                     height={820}
-                    className="h-120 w-full object-cover"
+                    className="h-80 w-full object-cover lg:h-120"
                   />
                 </div>
                 <div className="mt-4 flex items-center justify-between border-t border-[rgba(244,213,138,0.2)] pt-4 text-sm text-[rgba(255,249,239,0.8)]">
@@ -219,17 +191,7 @@ export default function Home() {
             description="Chaque projet est pensé pour allier l’expérience utilisateur, la beauté visuelle et une organisation impeccable, du concept à la mise en scène finale."
           />
 
-          <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {services.map(({ title, description, icon: Icon }) => (
-              <FadeIn key={title} className="group rounded-[1.8rem] border border-line bg-white p-7 shadow-[0_18px_40px_rgba(8,7,6,0.04)] transition-transform duration-300 hover:-translate-y-1">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-[rgba(214,163,77,0.12)] text-gold">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <h3 className="text-3xl text-foreground">{title}</h3>
-                <p className="mt-4 text-[0.98rem] leading-7 text-muted">{description}</p>
-              </FadeIn>
-            ))}
-          </div>
+          <ServicesGrid />
         </section>
 
         <section id="portfolio" className="scroll-mt-24 bg-panel py-24">
