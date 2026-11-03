@@ -17,21 +17,55 @@ const phoneSchema = z
   .max(30)
   .regex(/^[+()\d.\s-]+$/, "Numéro de téléphone invalide.");
 
+const rentalFields = {
+  sku: z.string().trim().min(1).max(64).regex(/^[\w-]+$/),
+  name: z.string().trim().min(2).max(120),
+  description: z.string().trim().max(2000).optional(),
+  subcategory: z.string().trim().min(2).max(80),
+  category: z.enum(["MOBILIER", "VAISSELLE", "ACCESSOIRES"]),
+  unitPriceCents: z.number().int().min(0).max(100_000_000),
+  replacementPriceCents: z.number().int().min(0).max(100_000_000),
+  priceUnit: z.enum(["item", "pair", "set", "dozen"]),
+  minRentalQuantity: z.number().int().min(1).max(100_000),
+  stockQuantity: z.number().int().min(0).max(100_000),
+  imageUrl: z.string().trim().min(1).max(1000),
+};
+
 export const rentalCreateSchema = z
   .object({
-    sku: z.string().trim().min(1).max(64).regex(/^[\w-]+$/),
-    name: z.string().trim().min(2).max(120),
-    description: z.string().trim().max(2000).optional(),
-    category: z.string().trim().min(2).max(80),
-    unitPriceCents: z.number().int().min(0).max(100_000_000),
-    stockQuantity: z.number().int().min(0).max(100_000),
+    ...rentalFields,
+    showStock: z.boolean().default(true),
     isActive: z.boolean().default(true),
+    sortOrder: z.number().int().min(0).max(1_000_000).default(0),
   })
-  .strict();
+  .strict()
+  .refine(
+    ({ minRentalQuantity, stockQuantity }) =>
+      stockQuantity === 0 || minRentalQuantity <= stockQuantity,
+    {
+      message: "La quantité minimale ne peut pas dépasser le stock disponible.",
+      path: ["minRentalQuantity"],
+    },
+  );
 
-export const rentalUpdateSchema = rentalCreateSchema
-  .extend({ isActive: z.boolean().optional() })
-  .partial()
+export const rentalUpdateSchema = z
+  .object({
+    sku: rentalFields.sku.optional(),
+    name: rentalFields.name.optional(),
+    description: rentalFields.description,
+    subcategory: rentalFields.subcategory.optional(),
+    category: rentalFields.category.optional(),
+    unitPriceCents: rentalFields.unitPriceCents.optional(),
+    replacementPriceCents: rentalFields.replacementPriceCents.optional(),
+    priceUnit: rentalFields.priceUnit.optional(),
+    minRentalQuantity: rentalFields.minRentalQuantity.optional(),
+    stockQuantity: rentalFields.stockQuantity.optional(),
+    imageUrl: rentalFields.imageUrl.optional(),
+    showStock: z.boolean().optional(),
+    isActive: z.boolean().optional(),
+    sortOrder: z.number().int().min(0).max(1_000_000).optional(),
+  })
+  .strict()
   .refine((rental) => Object.keys(rental).length > 0, {
     message: "Au moins un champ doit être modifié.",
   });
@@ -59,6 +93,30 @@ export const quoteRequestSchema = z
       }),
   })
   .strict();
+
+export const rentalQuoteRequestSchema = quoteRequestSchema
+  .extend({
+    rentalSelections: z
+      .array(
+        z
+          .object({
+            sku: z.string().trim().min(1).max(64).regex(/^[\w-]+$/),
+            quantity: z.number().int().min(1).max(100_000),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(100),
+  })
+  .superRefine(({ rentalSelections }, context) => {
+    if (new Set(rentalSelections.map(({ sku }) => sku.toUpperCase())).size !== rentalSelections.length) {
+      context.addIssue({
+        code: "custom",
+        message: "Un article ne peut apparaître qu’une seule fois.",
+        path: ["rentalSelections"],
+      });
+    }
+  });
 
 export const quoteStatusSchema = z.enum(quoteStatuses);
 export const quoteReviewSchema = z

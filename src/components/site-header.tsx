@@ -7,11 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { label: "Accueil", href: "#accueil" },
-  { label: "Prestations", href: "#services" },
-  { label: "Réalisations", href: "#portfolio" },
-  { label: "Tarifs", href: "#devis" },
-  { label: "Contact", href: "#contact" },
+  { label: "Accueil", href: "/#accueil" },
+  { label: "Prestations", href: "/#services" },
+  { label: "Réalisations", href: "/#portfolio" },
+  { label: "LOCATION", href: "/location" },
+  { label: "Tarifs", href: "/#devis" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export function SiteHeader() {
@@ -44,7 +45,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-[rgba(214,163,77,0.16)] bg-[rgba(8,7,6,0.86)] backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4.5 sm:px-6 lg:px-8 xl:py-4">
-        <Link href="#accueil" className="flex min-w-0 items-center gap-2.5 text-background transition-opacity hover:opacity-90">
+        <Link href="/" className="flex min-w-0 items-center gap-2.5 text-background transition-opacity hover:opacity-90">
           <div className="relative h-12 w-12 shrink-0">
             <Image
               src="/images/passyeventz-logo.png"
@@ -122,14 +123,14 @@ export function SiteHeader() {
       >
         <div className="mx-auto flex max-w-7xl flex-col gap-1">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.label}
               href={item.href}
               onClick={closeMenuAfterNavigation}
               className="block cursor-pointer rounded-xl px-3 py-3 text-sm uppercase tracking-[0.18em] text-[rgba(255,249,239,0.78)] transition-colors hover:bg-[rgba(255,249,239,0.05)] hover:text-light-gold"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
           <Button asChild size="sm" className="mt-2">
             <Link href="/devis">

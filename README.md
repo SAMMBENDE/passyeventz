@@ -63,6 +63,32 @@ ignores holds older than 24 hours, so a delayed scheduled run does not keep old
 pending bookings from consuming stock. An hourly schedule requires a Vercel
 plan or external scheduler that supports hourly execution.
 
+## Rental catalogue and Cloudinary
+
+The public rental collection is available at `/location`, with search, category
+filters, price sorting, quantity selection, and a rental quote request. The
+server resolves every selected SKU and rental price from MongoDB before creating
+a submitted quote. A catalogue request does not reserve inventory: the existing
+admin approval and transactional booking workflow remains authoritative for
+date-specific stock availability.
+
+Administrators manage products from the **Catalogue de location** section of
+`/admin`. Products support the MOBILIER, VAISSELLE, and ACCESSOIRES categories,
+prices per item/pair/set/dozen, replacement prices, minimum quantities, stock,
+visibility, activation, ordering, and photographs. Products referenced by a
+quote or booking cannot be deleted; deactivate them instead.
+
+Configure these private Cloudinary values in `.env.local` and in the production
+environment to enable administrator photo uploads:
+
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+
+The server signs uploads into a dedicated folder for authenticated
+administrators; the API secret is never returned to the browser. The browser
+uploads images directly to Cloudinary.
+
 ## Deposit payments
 
 Administrators can create a hosted Stripe or PayPal link from each pending or

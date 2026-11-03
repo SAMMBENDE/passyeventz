@@ -4,6 +4,7 @@ import { connection } from "next/server";
 
 import { AdminLogoutButton } from "@/components/admin-logout-button";
 import { AdminBookings } from "@/components/admin-bookings";
+import { AdminRentalCatalogue } from "@/components/admin-rental-catalogue";
 import { AdminQuoteInbox } from "@/components/admin-quote-inbox";
 import { AdminBookingListError, getAdminBookingList } from "@/lib/admin-bookings";
 import { AdminQuoteInboxError, getAdminQuoteInbox } from "@/lib/admin-quotes";
@@ -85,6 +86,17 @@ async function AdminDashboard() {
           </div>
         ))}
       </div>
+
+      <section className="mt-12">
+        <div className="mb-6">
+          <p className="text-xs uppercase tracking-[0.2em] text-gold">Location</p>
+          <h2 className="mt-2 font-serif text-4xl text-foreground">Catalogue de location</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+            Gérez les articles visibles dans la collection publique, leurs tarifs, stocks et photographies.
+          </p>
+        </div>
+        <AdminRentalCatalogue />
+      </section>
 
       <section className="mt-12">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">

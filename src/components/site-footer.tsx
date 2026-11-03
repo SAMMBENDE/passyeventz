@@ -5,11 +5,12 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 
 const quickLinks = [
-  { label: "Accueil", href: "#accueil" },
-  { label: "À propos", href: "#about" },
-  { label: "Prestations", href: "#services" },
-  { label: "Tarification", href: "#devis" },
-  { label: "Nous contacter", href: "#contact" },
+  { label: "Accueil", href: "/#accueil" },
+  { label: "À propos", href: "/#about" },
+  { label: "Prestations", href: "/#services" },
+  { label: "LOCATION", href: "/location" },
+  { label: "Tarification", href: "/#devis" },
+  { label: "Nous contacter", href: "/#contact" },
 ];
 
 const legalLinks = [
@@ -148,7 +149,7 @@ export function SiteFooter() {
 
         <div className="grid gap-10 border-b border-[rgba(255,249,239,0.1)] py-12 sm:grid-cols-2 lg:grid-cols-[1.25fr_1fr_1fr_0.8fr]">
           <div>
-            <Link href="#accueil" className="inline-flex items-center gap-3">
+            <Link href="/" className="inline-flex items-center gap-3">
               <span className="relative h-12 w-12 shrink-0">
                 <Image src="/images/passyeventz-logo.png" alt="" fill sizes="48px" className="object-contain" />
               </span>

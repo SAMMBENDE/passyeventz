@@ -6,6 +6,7 @@ import {
   quoteRequestSchema,
   quoteReviewSchema,
   rentalCreateSchema,
+  rentalQuoteRequestSchema,
   rentalUpdateSchema,
 } from "@/lib/validation";
 
@@ -14,9 +15,14 @@ describe("rental validation", () => {
     const result = rentalCreateSchema.parse({
       sku: "CHAIR-PREMIUM",
       name: "Chaise premium",
-      category: "Mobilier",
+      category: "MOBILIER",
+      subcategory: "Chaises",
       unitPriceCents: 1200,
+      replacementPriceCents: 9000,
+      priceUnit: "item",
+      minRentalQuantity: 1,
       stockQuantity: 40,
+      imageUrl: "/images/location/chaise.webp",
     });
 
     expect(result.isActive).toBe(true);
@@ -27,18 +33,42 @@ describe("rental validation", () => {
       rentalCreateSchema.safeParse({
         sku: "CHAIR-PREMIUM",
         name: "Chaise premium",
-        category: "Mobilier",
+        category: "MOBILIER",
+        subcategory: "Chaises",
         unitPriceCents: -1,
+        replacementPriceCents: 9000,
+        priceUnit: "item",
+        minRentalQuantity: 1,
         stockQuantity: 2.5,
+        imageUrl: "/images/location/chaise.webp",
       }).success,
     ).toBe(false);
     expect(
       rentalCreateSchema.safeParse({
         sku: "CHAIR-PREMIUM",
         name: "Chaise premium",
-        category: "Mobilier",
+        category: "MOBILIER",
+        subcategory: "Chaises",
         unitPriceCents: 1200,
+        replacementPriceCents: 9000,
+        priceUnit: "item",
+        minRentalQuantity: 3,
+        stockQuantity: 2,
+        imageUrl: "/images/location/chaise.webp",
+      }).success,
+    ).toBe(false);
+    expect(
+      rentalCreateSchema.safeParse({
+        sku: "CHAIR-PREMIUM",
+        name: "Chaise premium",
+        category: "MOBILIER",
+        subcategory: "Chaises",
+        unitPriceCents: 1200,
+        replacementPriceCents: 9000,
+        priceUnit: "item",
+        minRentalQuantity: 1,
         stockQuantity: 40,
+        imageUrl: "/images/location/chaise.webp",
         ownerId: "untrusted",
       }).success,
     ).toBe(false);
@@ -70,6 +100,29 @@ describe("quote request validation", () => {
       quoteRequestSchema.safeParse({
         ...validQuoteRequest,
         services: ["Location de mobilier", "Location de mobilier"],
+      }).success,
+    ).toBe(false);
+  });
+
+  it("accepts rental selections but rejects duplicate SKUs and client-supplied prices", () => {
+    const rentalRequest = {
+      ...validQuoteRequest,
+      rentalSelections: [{ sku: "CHAIR-PREMIUM", quantity: 4 }],
+    };
+    expect(rentalQuoteRequestSchema.safeParse(rentalRequest).success).toBe(true);
+    expect(
+      rentalQuoteRequestSchema.safeParse({
+        ...rentalRequest,
+        rentalSelections: [
+          { sku: "CHAIR-PREMIUM", quantity: 4 },
+          { sku: "chair-premium", quantity: 2 },
+        ],
+      }).success,
+    ).toBe(false);
+    expect(
+      rentalQuoteRequestSchema.safeParse({
+        ...rentalRequest,
+        unitPriceCents: 1,
       }).success,
     ).toBe(false);
   });

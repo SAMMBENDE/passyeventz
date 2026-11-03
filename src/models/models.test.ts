@@ -10,9 +10,14 @@ describe("Mongoose models", () => {
     const rental = new RentalModel({
       sku: "CHAIR-PREMIUM",
       name: "Chaise premium",
-      category: "Mobilier",
+      category: "MOBILIER",
+      subcategory: "Chaises",
       unitPriceCents: 1200,
+      replacementPriceCents: 9000,
+      priceUnit: "item",
+      minRentalQuantity: 1,
       stockQuantity: 40,
+      imageUrl: "/images/location/chaise.webp",
     });
 
     expect(rental.isActive).toBe(true);
@@ -21,9 +26,14 @@ describe("Mongoose models", () => {
       new RentalModel({
         sku: "CHAIR-PREMIUM",
         name: "Chaise premium",
-        category: "Mobilier",
+        category: "MOBILIER",
+        subcategory: "Chaises",
         unitPriceCents: 1200,
+        replacementPriceCents: 9000,
+        priceUnit: "item",
+        minRentalQuantity: 1,
         stockQuantity: 1.5,
+        imageUrl: "/images/location/chaise.webp",
       }).validate(),
     ).rejects.toMatchObject({ errors: { stockQuantity: expect.anything() } });
   });
