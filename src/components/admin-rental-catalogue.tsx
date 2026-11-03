@@ -387,8 +387,11 @@ export function AdminRentalCatalogue() {
           <div className="space-y-2 sm:col-span-2">
             <span className="block text-xs text-muted">Photographie produit (Cloudinary)</span>
             {draft.imageUrl && (
-              <div className="relative aspect-16/8 overflow-hidden rounded-xl bg-background">
-                <Image src={draft.imageUrl} alt="Aperçu de la photographie produit" fill sizes="(max-width: 639px) 100vw, 40vw" className="object-cover" />
+              <div
+                className="relative overflow-hidden rounded-xl bg-white"
+                style={{ aspectRatio: "4 / 3" }}
+              >
+                <Image src={draft.imageUrl} alt="Aperçu de la photographie produit" fill sizes="(max-width: 639px) 100vw, 40vw" className="object-contain" />
               </div>
             )}
             <label className="flex min-h-12 cursor-pointer items-center justify-center rounded-xl border border-dashed border-[rgba(197,161,90,0.6)] bg-[#fbf8f2] px-4 py-3 text-center text-xs font-medium text-foreground transition hover:bg-[#f5f0e7]">
@@ -444,8 +447,8 @@ export function AdminRentalCatalogue() {
           <ul className="space-y-3">
             {products.map((product) => (
               <li key={product.id} className="flex min-w-0 flex-col gap-4 rounded-2xl border border-line bg-white p-4 sm:flex-row sm:items-center">
-                <div className="relative aspect-4/3 w-full shrink-0 overflow-hidden rounded-xl bg-background sm:h-24 sm:w-32 sm:aspect-auto">
-                  {product.imageUrl && <Image src={product.imageUrl} alt="" fill sizes="128px" className="object-cover" />}
+                <div className="relative aspect-4/3 w-full shrink-0 overflow-hidden rounded-xl bg-white sm:h-24 sm:w-32 sm:aspect-auto">
+                  {product.imageUrl && <Image src={product.imageUrl} alt="" fill sizes="128px" className="object-contain" />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">

@@ -268,7 +268,7 @@ export function RentalCatalogue() {
                 className="group min-w-0 overflow-hidden rounded-[1.4rem] border border-[rgba(23,21,19,0.09)] bg-white shadow-[0_14px_38px_rgba(23,21,19,0.035)] transition-shadow hover:shadow-[0_20px_44px_rgba(23,21,19,0.09)]"
               >
                 <div
-                  className="relative overflow-hidden bg-[#ece6dc]"
+                  className="relative overflow-hidden bg-white"
                   style={{ aspectRatio: "4 / 3" }}
                 >
                   {product.imageUrl ? (
@@ -277,7 +277,7 @@ export function RentalCatalogue() {
                       alt={product.name}
                       fill
                       sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw"
-                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+                      className="object-contain"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted">
