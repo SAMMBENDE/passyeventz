@@ -53,6 +53,32 @@ describe("Mongoose models", () => {
     await quote.validate();
   });
 
+  it("accepts cleaning and terms details on a rental quote request", async () => {
+    const acceptedAt = new Date("2026-11-03T16:00:00.000Z");
+    const quote = new QuoteModel({
+      reference: "PE-2027-0002",
+      eventType: "Mariage",
+      eventDate: new Date("2027-06-12"),
+      guestCount: 80,
+      cleaningChoice: "passyeventz",
+      termsAcceptedAt: acceptedAt,
+      termsVersion: "2026-11-03",
+      customer: { email: "client@example.com" },
+      services: ["Location de matériel"],
+      lineItems: [
+        {
+          id: "CHAIR-PREMIUM",
+          label: "Chaise premium",
+          quantity: 20,
+          unitPriceCents: 1200,
+          type: "rental",
+        },
+      ],
+    });
+
+    await expect(quote.validate()).resolves.toBeUndefined();
+  });
+
   it("rejects bookings whose end is not after their start", async () => {
     const booking = new BookingModel({
       reference: "PE-B-2027-0001",

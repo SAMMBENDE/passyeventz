@@ -45,9 +45,10 @@ const pricedQuote = {
     cleaningCents: 0,
     taxCents: 5000,
     totalCents: 30_000,
-    depositCents: 9000,
+    depositCents: 12_000,
     advancePaymentCents: 12_000,
     balanceDueCents: 18_000,
+    depositBasisPoints: 4000,
   },
   status: "approved",
 };

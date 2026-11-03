@@ -3,6 +3,10 @@ import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/admin-auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import { calculateQuote } from "@/lib/quote";
+import {
+  calculateWashingCents,
+  quoteDepositBasisPoints,
+} from "@/lib/quote-terms";
 import { quoteEditorSchema } from "@/lib/validation";
 import { QuoteModel } from "@/models/quote";
 
@@ -59,7 +63,9 @@ export async function PATCH(
 
   try {
     await connectToDatabase();
-    const currentQuote = await QuoteModel.findById(quoteId).select("status updatedAt").lean();
+    const currentQuote = await QuoteModel.findById(quoteId)
+      .select("status updatedAt cleaningChoice")
+      .lean();
     if (!currentQuote) {
       return NextResponse.json({ error: "Devis introuvable." }, { status: 404 });
     }
@@ -84,9 +90,12 @@ export async function PATCH(
     const pricing = calculateQuote({
       items: parsed.data.lineItems,
       deliveryCents: parsed.data.deliveryCents,
-      cleaningCents: parsed.data.cleaningCents,
+      cleaningCents: calculateWashingCents(
+        parsed.data.guestCount,
+        currentQuote.cleaningChoice ?? "customer",
+      ),
       taxRate: parsed.data.taxRateBasisPoints / 10_000,
-      depositPercent: parsed.data.depositBasisPoints / 10_000,
+      depositPercent: quoteDepositBasisPoints / 10_000,
       advancePercent: parsed.data.advanceBasisPoints / 10_000,
     });
 

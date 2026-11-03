@@ -9,6 +9,9 @@ export interface Quote {
   eventType: string;
   eventDate: Date;
   guestCount: number;
+  cleaningChoice?: "passyeventz" | "customer";
+  termsAcceptedAt?: Date;
+  termsVersion?: string;
   customer: {
     email: string;
     name?: string;
@@ -66,6 +69,9 @@ const quoteSchema = new Schema<Quote>(
     eventType: { type: String, required: true, trim: true, minlength: 2, maxlength: 100 },
     eventDate: { type: Date, required: true },
     guestCount: { type: Number, required: true, min: 1, max: 100_000, validate: Number.isInteger },
+    cleaningChoice: { type: String, enum: ["passyeventz", "customer"] },
+    termsAcceptedAt: { type: Date },
+    termsVersion: { type: String, trim: true, maxlength: 40 },
     customer: { type: customerSchema, required: true },
     note: { type: String, trim: true, maxlength: 2000 },
     services: { type: [String], required: true, validate: (services: string[]) => services.length > 0 },
@@ -75,6 +81,16 @@ const quoteSchema = new Schema<Quote>(
   },
   { timestamps: true, strict: "throw" },
 );
+
+const cachedQuoteModel = models.Quote as Model<Quote> | undefined;
+if (
+  cachedQuoteModel &&
+  !["cleaningChoice", "termsAcceptedAt", "termsVersion"].every((path) =>
+    cachedQuoteModel.schema.path(path),
+  )
+) {
+  delete models.Quote;
+}
 
 export const QuoteModel =
   (models.Quote as Model<Quote> | undefined) ?? model<Quote>("Quote", quoteSchema);

@@ -21,7 +21,7 @@ export async function getAdminQuoteInbox() {
         .sort({ createdAt: -1 })
         .limit(50)
         .select(
-          "reference eventType eventDate guestCount customer.email customer.name customer.phone note services lineItems pricing status createdAt updatedAt",
+          "reference eventType eventDate guestCount cleaningChoice termsAcceptedAt termsVersion customer.email customer.name customer.phone note services lineItems pricing status createdAt updatedAt",
         )
         .lean(),
       QuoteModel.countDocuments({ status: { $in: ["submitted", "revised"] } }),
@@ -37,6 +37,9 @@ export async function getAdminQuoteInbox() {
         eventType: quote.eventType,
         eventDate: quote.eventDate.toISOString(),
         guestCount: quote.guestCount,
+        cleaningChoice: quote.cleaningChoice ?? "customer",
+        termsAcceptedAt: quote.termsAcceptedAt?.toISOString() ?? null,
+        termsVersion: quote.termsVersion ?? null,
         customer: quote.customer,
         note: quote.note,
         services: quote.services,

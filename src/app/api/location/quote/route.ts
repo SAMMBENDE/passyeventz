@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { calculateQuote } from "@/lib/quote";
 import { connectToDatabase } from "@/lib/mongodb";
 import { resolveRentalQuoteLineItems } from "@/lib/rental-catalogue";
+import { calculateWashingCents, quoteTermsVersion } from "@/lib/quote-terms";
 import { rentalQuoteRequestSchema } from "@/lib/validation";
 import { QuoteModel } from "@/models/quote";
 import { RentalModel } from "@/models/rental";
@@ -59,7 +60,13 @@ export async function POST(request: Request) {
       );
     }
     const lineItems = resolution.lineItems;
-    const pricing = calculateQuote({ items: lineItems });
+    const pricing = calculateQuote({
+      items: lineItems,
+      cleaningCents: calculateWashingCents(
+        parsed.data.guestCount,
+        parsed.data.cleaningChoice,
+      ),
+    });
     if (!Number.isSafeInteger(pricing.totalCents)) {
       return NextResponse.json({ error: "Le montant de la demande dépasse la limite autorisée." }, { status: 400 });
     }
@@ -69,6 +76,9 @@ export async function POST(request: Request) {
       eventType: parsed.data.eventType,
       eventDate: new Date(`${parsed.data.eventDate}T00:00:00.000Z`),
       guestCount: parsed.data.guestCount,
+      cleaningChoice: parsed.data.cleaningChoice,
+      termsAcceptedAt: new Date(),
+      termsVersion: quoteTermsVersion,
       customer: {
         email: parsed.data.email,
         name: parsed.data.customerName,

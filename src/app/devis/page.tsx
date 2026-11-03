@@ -4,10 +4,16 @@ import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { calculateQuote, formatPriceCents } from "@/lib/quote";
+import {
+  calculateWashingCents,
+  quoteDepositBasisPoints,
+  quoteTerms,
+  washingPricePerPersonCents,
+} from "@/lib/quote-terms";
 import { quoteRequestSchema } from "@/lib/validation";
 
 type QuoteFormValues = {
@@ -15,6 +21,8 @@ type QuoteFormValues = {
   eventDate: string;
   guestCount: number;
   email: string;
+  cleaningChoice: "passyeventz" | "customer";
+  termsAccepted: boolean;
   note?: string;
   services: string[];
 };
@@ -60,21 +68,30 @@ export default function QuotePage() {
       eventDate: "",
       guestCount: 120,
       email: "",
+      cleaningChoice: "customer",
+      termsAccepted: false,
       note: "",
       services: defaultServices,
     },
   });
 
+  const guestCount = Number(useWatch({ control: form.control, name: "guestCount" })) || 0;
+  const cleaningChoice = useWatch({ control: form.control, name: "cleaningChoice" });
+  const cleaningCents =
+    cleaningChoice === "passyeventz" && guestCount >= 1 && guestCount <= 100_000
+      ? calculateWashingCents(guestCount, cleaningChoice)
+      : 0;
+
   const quoteSummary = useMemo(() => {
     return calculateQuote({
       items: selectedItems,
       deliveryCents: 4000,
-      cleaningCents: 1500,
+      cleaningCents,
       taxRate: 0.2,
-      depositPercent: 0.3,
+      depositPercent: quoteDepositBasisPoints / 10_000,
       advancePercent: 0.4,
     });
-  }, []);
+  }, [cleaningCents]);
 
   const onSubmit = async (values: QuoteFormValues) => {
     setSubmissionError(null);
@@ -187,6 +204,7 @@ export default function QuotePage() {
               <input
                 type="number"
                 min={1}
+                max={100000}
                 {...form.register("guestCount")}
                 className="w-full rounded-2xl border border-[rgba(8,7,6,0.12)] bg-background px-4 py-3 text-foreground outline-none focus:border-gold"
               />
@@ -201,6 +219,69 @@ export default function QuotePage() {
                 className="w-full rounded-2xl border border-[rgba(8,7,6,0.12)] bg-background px-4 py-3 text-foreground outline-none focus:border-gold"
               />
             </label>
+          </div>
+
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-medium text-foreground">Lavage de la vaisselle</legend>
+            <p className="text-sm leading-6 text-muted">
+              Choisissez le lavage par Passyeventz à {formatPriceCents(washingPricePerPersonCents)} par
+              personne, ou indiquez que vous laverez vous-même la vaisselle.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="flex items-start gap-3 rounded-2xl border border-[rgba(8,7,6,0.08)] bg-background px-4 py-3 text-sm text-muted">
+                <input
+                  type="radio"
+                  value="passyeventz"
+                  {...form.register("cleaningChoice")}
+                  className="mt-1 h-4 w-4 accent-gold"
+                />
+                <span>
+                  Lavage par Passyeventz
+                  <span className="mt-1 block text-xs text-muted">
+                    {guestCount > 0
+                      ? `${guestCount} personnes × ${formatPriceCents(washingPricePerPersonCents)}`
+                      : `${formatPriceCents(washingPricePerPersonCents)} par personne`}
+                  </span>
+                </span>
+              </label>
+              <label className="flex items-start gap-3 rounded-2xl border border-[rgba(8,7,6,0.08)] bg-background px-4 py-3 text-sm text-muted">
+                <input
+                  type="radio"
+                  value="customer"
+                  {...form.register("cleaningChoice")}
+                  className="mt-1 h-4 w-4 accent-gold"
+                />
+                <span>Je m’occupe du lavage</span>
+              </label>
+            </div>
+            {form.formState.errors.cleaningChoice?.message && (
+              <p className="text-sm text-red-700">{form.formState.errors.cleaningChoice.message}</p>
+            )}
+          </fieldset>
+
+          <div className="rounded-2xl border border-line bg-background p-4">
+            <p className="text-xs uppercase tracking-[0.16em] text-gold">Conditions du devis</p>
+            <ul className="mt-3 space-y-2 text-xs leading-5 text-muted">
+              {quoteTerms.map((term) => (
+                <li key={term.title}>
+                  <strong className="text-foreground">{term.title} :</strong> {term.text}
+                </li>
+              ))}
+            </ul>
+            <label className="mt-4 flex items-start gap-3 border-t border-line pt-4 text-sm leading-6 text-foreground">
+              <input
+                type="checkbox"
+                required
+                {...form.register("termsAccepted")}
+                className="mt-1 h-4 w-4 shrink-0 accent-gold"
+              />
+              <span>J’ai lu et j’accepte les conditions ci-dessus.</span>
+            </label>
+            {form.formState.errors.termsAccepted?.message && (
+              <p className="mt-2 text-sm text-red-700">
+                Vous devez accepter les conditions pour envoyer votre demande.
+              </p>
+            )}
           </div>
 
           <div className="space-y-3">
@@ -272,11 +353,25 @@ export default function QuotePage() {
           <div className="mt-8 space-y-3 text-sm text-muted">
             <div className="flex justify-between"><span>Sous-total</span><span>{formatPriceCents(quoteSummary.subtotalCents)}</span></div>
             <div className="flex justify-between"><span>Livraison</span><span>{formatPriceCents(quoteSummary.deliveryCents)}</span></div>
-            <div className="flex justify-between"><span>Nettoyage</span><span>{formatPriceCents(quoteSummary.cleaningCents)}</span></div>
+            <div className="flex justify-between">
+              <span>
+                Lavage
+                <span className="block text-xs">
+                  {cleaningChoice === "passyeventz"
+                    ? `${guestCount} pers. × ${formatPriceCents(washingPricePerPersonCents)}`
+                    : "À la charge du client"}
+                </span>
+              </span>
+              <span>{formatPriceCents(quoteSummary.cleaningCents)}</span>
+            </div>
             <div className="flex justify-between"><span>TVA</span><span>{formatPriceCents(quoteSummary.taxCents)}</span></div>
             <div className="flex justify-between border-t border-[rgba(8,7,6,0.08)] pt-3 text-base font-medium text-foreground">
               <span>Total</span>
               <span>{formatPriceCents(quoteSummary.totalCents)}</span>
+            </div>
+            <div className="flex justify-between text-sm text-muted">
+              <span>Acompte à la réservation (40 %)</span>
+              <span>{formatPriceCents(quoteSummary.depositCents)}</span>
             </div>
           </div>
 

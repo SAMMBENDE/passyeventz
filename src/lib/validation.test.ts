@@ -86,6 +86,8 @@ describe("quote request validation", () => {
     eventDate: "2027-06-12",
     guestCount: 120,
     email: "CLIENT@EXAMPLE.COM",
+    cleaningChoice: "passyeventz" as const,
+    termsAccepted: true as const,
     services: ["Décoration de salle"],
   };
 
@@ -101,6 +103,9 @@ describe("quote request validation", () => {
         ...validQuoteRequest,
         services: ["Location de mobilier", "Location de mobilier"],
       }).success,
+    ).toBe(false);
+    expect(
+      quoteRequestSchema.safeParse({ ...validQuoteRequest, termsAccepted: false }).success,
     ).toBe(false);
   });
 

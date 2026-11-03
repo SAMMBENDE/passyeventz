@@ -11,6 +11,7 @@ import {
   type RentalCategory,
   type RentalPriceUnit,
 } from "@/lib/rental-catalogue";
+import { quoteTerms, washingPricePerPersonCents } from "@/lib/quote-terms";
 import { formatPriceCents } from "@/lib/quote";
 
 type CatalogueProduct = {
@@ -35,6 +36,8 @@ type QuoteForm = {
   customerName: string;
   phone: string;
   note: string;
+  cleaningChoice: "passyeventz" | "customer";
+  termsAccepted: boolean;
 };
 
 const categoryLabels: Record<RentalCategory, string> = {
@@ -51,6 +54,8 @@ const initialQuoteForm: QuoteForm = {
   customerName: "",
   phone: "",
   note: "",
+  cleaningChoice: "customer",
+  termsAccepted: false,
 };
 
 function getErrorMessage(result: unknown, fallback: string): string {
@@ -155,6 +160,7 @@ export function RentalCatalogue() {
           customerName: quoteForm.customerName.trim() || undefined,
           phone: quoteForm.phone.trim() || undefined,
           guestCount: Number(quoteForm.guestCount),
+          termsAccepted: quoteForm.termsAccepted,
           services: ["Location de matériel"],
           rentalSelections: selectedProducts.map(({ product, quantity }) => ({
             sku: product.sku,
@@ -500,6 +506,38 @@ export function RentalCatalogue() {
                     className="w-full rounded-xl border border-line bg-background px-4 py-3 text-foreground outline-none focus:border-gold"
                   />
                 </label>
+                <fieldset className="space-y-2 text-sm text-muted sm:col-span-2">
+                  <legend className="font-medium text-foreground">Lavage de la vaisselle</legend>
+                  <p className="text-xs leading-5">
+                    Lavage par Passyeventz : {quoteForm.guestCount} personnes ×{" "}
+                    {formatPriceCents(washingPricePerPersonCents)}. Sinon, vous pouvez laver
+                    vous-même la vaisselle.
+                  </p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <label className="flex items-center gap-2 rounded-xl border border-line bg-background p-3">
+                      <input
+                        type="radio"
+                        name="cleaningChoice"
+                        value="passyeventz"
+                        checked={quoteForm.cleaningChoice === "passyeventz"}
+                        onChange={() => setQuoteForm({ ...quoteForm, cleaningChoice: "passyeventz" })}
+                        className="h-4 w-4 accent-gold"
+                      />
+                      Lavage par Passyeventz
+                    </label>
+                    <label className="flex items-center gap-2 rounded-xl border border-line bg-background p-3">
+                      <input
+                        type="radio"
+                        name="cleaningChoice"
+                        value="customer"
+                        checked={quoteForm.cleaningChoice === "customer"}
+                        onChange={() => setQuoteForm({ ...quoteForm, cleaningChoice: "customer" })}
+                        className="h-4 w-4 accent-gold"
+                      />
+                      Je m’occupe du lavage
+                    </label>
+                  </div>
+                </fieldset>
                 <label className="space-y-2 text-sm text-muted sm:col-span-2">
                   <span>Téléphone <span className="text-muted/70">(facultatif)</span></span>
                   <input
@@ -510,6 +548,28 @@ export function RentalCatalogue() {
                     className="w-full rounded-xl border border-line bg-background px-4 py-3 text-foreground outline-none focus:border-gold"
                   />
                 </label>
+                <div className="rounded-2xl border border-line bg-background p-4 text-xs leading-5 text-muted sm:col-span-2">
+                  <p className="font-medium uppercase tracking-[0.14em] text-gold">Conditions du devis</p>
+                  <ul className="mt-2 space-y-2">
+                    {quoteTerms.map((term) => (
+                      <li key={term.title}>
+                        <strong className="text-foreground">{term.title} :</strong> {term.text}
+                      </li>
+                    ))}
+                  </ul>
+                  <label className="mt-3 flex items-start gap-2 border-t border-line pt-3 text-sm text-foreground">
+                    <input
+                      type="checkbox"
+                      required
+                      checked={quoteForm.termsAccepted}
+                      onChange={(event) =>
+                        setQuoteForm({ ...quoteForm, termsAccepted: event.target.checked })
+                      }
+                      className="mt-1 h-4 w-4 shrink-0 accent-gold"
+                    />
+                    J’ai lu et j’accepte ces conditions.
+                  </label>
+                </div>
                 <label className="space-y-2 text-sm text-muted sm:col-span-2">
                   <span>Un détail à nous partager ? <span className="text-muted/70">(facultatif)</span></span>
                   <textarea

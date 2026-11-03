@@ -6,6 +6,11 @@ import type { Dispatch, FormEvent, SetStateAction } from "react";
 
 import { calculateQuote, formatPriceCents } from "@/lib/quote";
 import type { QuoteCalculationResult, QuoteStatus } from "@/lib/quote";
+import {
+  calculateWashingCents,
+  quoteDepositBasisPoints,
+  washingPricePerPersonCents,
+} from "@/lib/quote-terms";
 import { quoteEditorResponseSchema } from "@/lib/validation";
 
 type AdminQuoteLineItem = {
@@ -22,6 +27,9 @@ type AdminQuote = {
   eventType: string;
   eventDate: string;
   guestCount: number;
+  cleaningChoice: "passyeventz" | "customer";
+  termsAcceptedAt: string | null;
+  termsVersion: string | null;
   customer: { email: string; name?: string; phone?: string };
   note?: string;
   services: string[];
@@ -118,9 +126,13 @@ function QuoteEditor({
   const [deliveryEuros, setDeliveryEuros] = useState(
     ((quote.pricing?.deliveryCents ?? 0) / 100).toFixed(2),
   );
-  const [cleaningEuros, setCleaningEuros] = useState(
-    ((quote.pricing?.cleaningCents ?? 0) / 100).toFixed(2),
-  );
+  const currentGuestCount = Number(guestCount);
+  const cleaningCents =
+    quote.cleaningChoice === "passyeventz" &&
+    currentGuestCount >= 1 &&
+    currentGuestCount <= 100_000
+      ? calculateWashingCents(currentGuestCount, quote.cleaningChoice)
+      : 0;
   const [taxPercent, setTaxPercent] = useState(
     (
       percentBasisPoints(
@@ -128,12 +140,6 @@ function QuoteEditor({
         quote.pricing?.taxCents ?? 0,
         subtotalCents + (quote.pricing?.deliveryCents ?? 0) + (quote.pricing?.cleaningCents ?? 0),
       ) / 100
-    ).toFixed(2),
-  );
-  const [depositPercent, setDepositPercent] = useState(
-    (
-      percentBasisPoints(quote.pricing?.depositBasisPoints, quote.pricing?.depositCents ?? 0, totalCents) /
-      100
     ).toFixed(2),
   );
   const [advancePercent, setAdvancePercent] = useState(
@@ -174,9 +180,9 @@ function QuoteEditor({
       type: item.type,
     })),
     deliveryCents: centsFromEuro(deliveryEuros) || 0,
-    cleaningCents: centsFromEuro(cleaningEuros) || 0,
+    cleaningCents,
     taxRate: (Number(taxPercent) || 0) / 100,
-    depositPercent: (Number(depositPercent) || 0) / 100,
+    depositPercent: quoteDepositBasisPoints / 10_000,
     advancePercent: (Number(advancePercent) || 0) / 100,
   });
 
@@ -204,9 +210,9 @@ function QuoteEditor({
             type: item.type,
           })),
           deliveryCents: centsFromEuro(deliveryEuros),
-          cleaningCents: centsFromEuro(cleaningEuros),
+          cleaningCents,
           taxRateBasisPoints: Math.round(Number(taxPercent) * 100),
-          depositBasisPoints: Math.round(Number(depositPercent) * 100),
+          depositBasisPoints: quoteDepositBasisPoints,
           advanceBasisPoints: Math.round(Number(advancePercent) * 100),
         }),
       });
@@ -393,13 +399,11 @@ function QuoteEditor({
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {(
           [
             { label: "Livraison (€)", value: deliveryEuros, setter: setDeliveryEuros },
-            { label: "Nettoyage (€)", value: cleaningEuros, setter: setCleaningEuros },
             { label: "TVA (%)", value: taxPercent, setter: setTaxPercent },
-            { label: "Acompte (%)", value: depositPercent, setter: setDepositPercent },
             { label: "Avance (%)", value: advancePercent, setter: setAdvancePercent },
           ] satisfies Array<{
             label: string;
@@ -421,6 +425,20 @@ function QuoteEditor({
             />
           </label>
         ))}
+        <div className="rounded-xl border border-line bg-background px-3 py-2 text-sm text-muted">
+          Lavage calculé automatiquement
+          <strong className="mt-1 block text-foreground">
+            {quote.cleaningChoice === "passyeventz"
+              ? `${currentGuestCount} pers. × ${formatPriceCents(washingPricePerPersonCents)} = ${formatPriceCents(cleaningCents)}`
+              : "À la charge du client — 0,00 €"}
+          </strong>
+        </div>
+        <div className="rounded-xl border border-line bg-background px-3 py-2 text-sm text-muted">
+          Acompte à la réservation
+          <strong className="mt-1 block text-foreground">
+            {quoteDepositBasisPoints / 100} % ({formatPriceCents(preview.depositCents)})
+          </strong>
+        </div>
       </div>
 
       <label className="block space-y-2 text-sm text-muted">
@@ -545,6 +563,12 @@ export function AdminQuoteInbox({ quotes }: Props) {
                   {quote.reference} · Événement le {formatDate(quote.eventDate)} ·{" "}
                   {quote.guestCount} invités
                 </p>
+                <p className="mt-1 text-xs text-muted">
+                  Lavage : {quote.cleaningChoice === "passyeventz"
+                    ? `Passyeventz (${formatPriceCents(washingPricePerPersonCents)} / personne)`
+                    : "à la charge du client"}
+                  {quote.termsAcceptedAt ? " · Conditions acceptées" : ""}
+                </p>
               </div>
 
               {quote.pricing ? (
@@ -644,7 +668,7 @@ export function AdminQuoteInbox({ quotes }: Props) {
                     href={`/api/admin/quotes/${quote.id}/pdf`}
                     className="inline-flex h-10 items-center justify-center rounded-full border border-line px-5 text-sm font-medium text-foreground hover:border-gold"
                   >
-                    Télécharger le PDF
+                      Télécharger le devis client
                   </a>
                 ) : null}
                 {canApprove ? (

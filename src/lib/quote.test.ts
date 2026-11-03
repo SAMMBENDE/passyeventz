@@ -16,7 +16,7 @@ describe("quote calculations", () => {
       deliveryCents: 4000,
       cleaningCents: 1500,
       taxRate: 0.2,
-      depositPercent: 0.3,
+      depositPercent: 0.4,
       advancePercent: 0.4,
     });
 
@@ -25,7 +25,7 @@ describe("quote calculations", () => {
     expect(result.cleaningCents).toBe(1500);
     expect(result.taxCents).toBe(10900);
     expect(result.totalCents).toBe(65400);
-    expect(result.depositCents).toBe(19620);
+    expect(result.depositCents).toBe(26160);
     expect(result.advancePaymentCents).toBe(26160);
     expect(result.balanceDueCents).toBe(39240);
   });

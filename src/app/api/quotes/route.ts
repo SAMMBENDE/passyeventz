@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 
 import { connectToDatabase } from "@/lib/mongodb";
+import { quoteTermsVersion } from "@/lib/quote-terms";
 import { quoteRequestSchema } from "@/lib/validation";
 import { QuoteModel } from "@/models/quote";
 
@@ -46,6 +47,9 @@ export async function POST(request: Request) {
       eventType: result.data.eventType,
       eventDate: new Date(`${result.data.eventDate}T00:00:00.000Z`),
       guestCount: result.data.guestCount,
+      cleaningChoice: result.data.cleaningChoice,
+      termsAcceptedAt: new Date(),
+      termsVersion: quoteTermsVersion,
       customer: {
         email: result.data.email,
         name: result.data.customerName,

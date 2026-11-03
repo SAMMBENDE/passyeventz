@@ -60,7 +60,7 @@ export function calculateQuote({
   deliveryCents = 0,
   cleaningCents = 0,
   taxRate = 0.2,
-  depositPercent = 0.3,
+  depositPercent = 0.4,
   advancePercent = 0.4,
 }: QuoteCalculationInput): QuoteCalculationResult {
   const subtotalCents = items.reduce(

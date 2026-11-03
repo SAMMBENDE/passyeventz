@@ -75,6 +75,8 @@ export const quoteRequestSchema = z
     eventType: z.string().trim().min(2).max(100),
     eventDate: z.iso.date(),
     guestCount: z.number().int().min(1).max(100_000),
+    cleaningChoice: z.enum(["passyeventz", "customer"]),
+    termsAccepted: z.literal(true),
     email: emailSchema,
     customerName: z.string().trim().min(2).max(120).optional(),
     phone: phoneSchema.optional(),

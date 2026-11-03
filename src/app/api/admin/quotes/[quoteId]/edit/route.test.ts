@@ -66,9 +66,13 @@ function request(body: unknown, origin = "http://localhost") {
   });
 }
 
-function setCurrentQuote(status: string, timestamp = new Date(updatedAt)) {
+function setCurrentQuote(
+  status: string,
+  timestamp = new Date(updatedAt),
+  cleaningChoice: "passyeventz" | "customer" = "passyeventz",
+) {
   mocks.findById.mockReturnValue({
-    select: () => ({ lean: () => Promise.resolve({ status, updatedAt: timestamp }) }),
+    select: () => ({ lean: () => Promise.resolve({ status, updatedAt: timestamp, cleaningChoice }) }),
   });
 }
 
@@ -121,12 +125,12 @@ describe("PATCH /api/admin/quotes/[quoteId]/edit", () => {
     expect(body.quote.pricing).toMatchObject({
       subtotalCents: 49_000,
       deliveryCents: 4000,
-      cleaningCents: 1500,
-      taxCents: 10_900,
-      totalCents: 65_400,
-      depositCents: 19_620,
-      advancePaymentCents: 26_160,
-      balanceDueCents: 39_240,
+      cleaningCents: 21_600,
+      taxCents: 14_920,
+      totalCents: 89_520,
+      depositCents: 35_808,
+      advancePaymentCents: 35_808,
+      balanceDueCents: 53_712,
       taxRateBasisPoints: 2000,
     });
 
@@ -137,7 +141,32 @@ describe("PATCH /api/admin/quotes/[quoteId]/edit", () => {
       eventType: "Mariage",
       lineItems: validPayload.lineItems,
     });
-    expect(update.$set.pricing.totalCents).toBe(65_400);
+    expect(update.$set.pricing.totalCents).toBe(89_520);
+  });
+
+  it("waives washing and applies the fixed 40% deposit when the customer washes", async () => {
+    setCurrentQuote("submitted", new Date(updatedAt), "customer");
+    mocks.findOneAndUpdate.mockReturnValue({
+      select: () => ({
+        lean: () =>
+          Promise.resolve({
+            _id: { toString: () => quoteId },
+            reference: "PE-2027-0001",
+            status: "revised",
+            updatedAt: new Date("2026-10-30T12:05:00Z"),
+          }),
+      }),
+    });
+
+    const response = await PATCH(
+      request({ ...validPayload, depositBasisPoints: 3000, cleaningCents: 90_000 }),
+      routeContext,
+    );
+    const body = await response.json();
+
+    expect(body.quote.pricing.cleaningCents).toBe(0);
+    expect(body.quote.pricing.depositBasisPoints).toBe(4000);
+    expect(body.quote.pricing.depositCents).toBe(25_440);
   });
 
   it("disallows editing approved quotes and rejects stale edits", async () => {
