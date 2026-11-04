@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { BookingModel } from "@/models/booking";
 import { QuoteModel } from "@/models/quote";
 import { RentalModel } from "@/models/rental";
+import { RealisationModel } from "@/models/realisation";
 
 describe("Mongoose models", () => {
   it("applies rental defaults and rejects invalid quantities", async () => {
@@ -36,6 +37,19 @@ describe("Mongoose models", () => {
         imageUrl: "/images/location/chaise.webp",
       }).validate(),
     ).rejects.toMatchObject({ errors: { stockQuantity: expect.anything() } });
+  });
+
+  it("validates active realisation records and defaults their visibility", async () => {
+    const realisation = new RealisationModel({
+      title: "Réception élégante",
+      description: "Une scénographie raffinée, imaginée pour cette réception.",
+      category: "Mariage",
+      imageUrl: "/images/realisations/scene.webp",
+    });
+
+    expect(realisation.isActive).toBe(true);
+    expect(realisation.sortOrder).toBe(0);
+    await expect(realisation.validate()).resolves.toBeUndefined();
   });
 
   it("accepts a quote request document without priced line items", async () => {

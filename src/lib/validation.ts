@@ -31,6 +31,34 @@ const rentalFields = {
   imageUrl: z.string().trim().min(1).max(1000),
 };
 
+const realisationFields = {
+  title: z.string().trim().min(2).max(120),
+  description: z.string().trim().min(3).max(600),
+  category: z.string().trim().min(2).max(80),
+  imageUrl: z.string().trim().min(1).max(1000),
+};
+
+export const realisationCreateSchema = z
+  .object({
+    ...realisationFields,
+    category: realisationFields.category.default("Événement"),
+  })
+  .strict();
+
+export const realisationUpdateSchema = z
+  .object({
+    title: realisationFields.title.optional(),
+    description: realisationFields.description.optional(),
+    category: realisationFields.category.optional(),
+    imageUrl: realisationFields.imageUrl.optional(),
+    isActive: z.boolean().optional(),
+    sortOrder: z.number().int().min(0).max(1_000_000).optional(),
+  })
+  .strict()
+  .refine((realisation) => Object.keys(realisation).length > 0, {
+    message: "Au moins un champ doit être modifié.",
+  });
+
 export const rentalCreateSchema = z
   .object({
     ...rentalFields,

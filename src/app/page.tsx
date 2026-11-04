@@ -143,7 +143,7 @@ export default function Home() {
                 Demander un devis →
               </Link>
               <Link
-                href="#portfolio"
+                href="/#portfolio"
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(244,213,138,0.36)] px-6 text-sm font-medium text-background transition-colors hover:border-light-gold hover:bg-[rgba(255,249,239,0.06)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-light-gold"
               >
                 Découvrir nos réalisations
@@ -184,7 +184,7 @@ export default function Home() {
                   </Link>
                 </Button>
                 <Button asChild variant="secondary" size="lg">
-                  <Link href="#portfolio">Découvrir nos réalisations</Link>
+                  <Link href="/#portfolio">Découvrir nos réalisations</Link>
                 </Button>
               </div>
 
@@ -240,33 +240,6 @@ export default function Home() {
             />
 
             <RealisationsShowcase items={gallery} />
-
-            <div className="mt-14 hidden gap-6 md:grid md:grid-cols-2 xl:grid-cols-3">
-              {gallery.map((item) => (
-                <FadeIn key={item.title} className="group overflow-hidden rounded-4xl border border-[rgba(8,7,6,0.06)] bg-white shadow-[0_18px_40px_rgba(8,7,6,0.04)]">
-                  <div className="relative h-80 overflow-hidden">
-                    <Image
-                      src={item.image}
-                      alt={item.imageAlt}
-                      fill
-                      sizes="(min-width: 1280px) 389px, (min-width: 1024px) calc((100vw - 88px) / 2), (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 32px)"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute left-5 top-5 rounded-full border border-[rgba(244,213,138,0.5)] bg-[rgba(8,7,6,0.28)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.18em] text-background backdrop-blur-sm">
-                      {item.category}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between gap-4 p-6">
-                    <div>
-                      <h3 className="text-2xl text-foreground">{item.title}</h3>
-                    </div>
-                    <Link href="/devis" className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(8,7,6,0.12)] text-foreground transition-colors hover:border-gold hover:text-gold">
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
           </div>
         </section>
 

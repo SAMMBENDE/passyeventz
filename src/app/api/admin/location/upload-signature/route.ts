@@ -32,8 +32,13 @@ export async function POST(request: Request) {
     );
   }
 
+  const purpose = new URL(request.url).searchParams.get("purpose") ?? "location";
+  if (purpose !== "location" && purpose !== "realisations") {
+    return NextResponse.json({ error: "Destination d’image invalide." }, { status: 400 });
+  }
+
   const timestamp = Math.floor(Date.now() / 1000);
-  const folder = "passyeventz/location";
+  const folder = `passyeventz/${purpose}`;
   const signature = createHash("sha1")
     .update(`folder=${folder}&timestamp=${timestamp}${apiSecret}`)
     .digest("hex");

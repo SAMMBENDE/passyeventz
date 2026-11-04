@@ -5,6 +5,8 @@ import {
   quoteEditorSchema,
   quoteRequestSchema,
   quoteReviewSchema,
+  realisationCreateSchema,
+  realisationUpdateSchema,
   rentalCreateSchema,
   rentalQuoteRequestSchema,
   rentalUpdateSchema,
@@ -77,6 +79,31 @@ describe("rental validation", () => {
   it("requires at least one field for an update", () => {
     expect(rentalUpdateSchema.safeParse({}).success).toBe(false);
     expect(rentalUpdateSchema.safeParse({ stockQuantity: 12 }).success).toBe(true);
+  });
+});
+
+describe("realisation validation", () => {
+  it("accepts a titled project with an image and defaults its category", () => {
+    expect(
+      realisationCreateSchema.parse({
+        title: "Réception élégante",
+        description: "Une scénographie raffinée, imaginée pour cette réception.",
+        imageUrl: "/images/realisations/scene.webp",
+      }),
+    ).toMatchObject({ category: "Événement" });
+  });
+
+  it("rejects empty updates and unknown fields", () => {
+    expect(realisationUpdateSchema.safeParse({}).success).toBe(false);
+    expect(realisationUpdateSchema.safeParse({ isActive: false }).success).toBe(true);
+    expect(
+      realisationCreateSchema.safeParse({
+        title: "Projet",
+        description: "Description",
+        imageUrl: "/images/realisations/scene.webp",
+        ownerId: "untrusted",
+      }).success,
+    ).toBe(false);
   });
 });
 

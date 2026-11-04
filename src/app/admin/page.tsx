@@ -4,6 +4,7 @@ import { connection } from "next/server";
 
 import { AdminLogoutButton } from "@/components/admin-logout-button";
 import { AdminBookings } from "@/components/admin-bookings";
+import { AdminRealisations } from "@/components/admin-realisations";
 import { AdminRentalCatalogue } from "@/components/admin-rental-catalogue";
 import { AdminQuoteInbox } from "@/components/admin-quote-inbox";
 import { AdminBookingListError, getAdminBookingList } from "@/lib/admin-bookings";
@@ -96,6 +97,18 @@ async function AdminDashboard() {
           </p>
         </div>
         <AdminRentalCatalogue />
+      </section>
+
+      <section className="mt-12">
+        <div className="mb-6">
+          <p className="text-xs uppercase tracking-[0.2em] text-gold">Portfolio</p>
+          <h2 className="mt-2 font-serif text-4xl text-foreground">Réalisations</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+            Ajoutez vos projets avec leur photographie, leur titre et une courte description. Les
+            projets publiés apparaissent avec les six réalisations historiques sur la page d’accueil.
+          </p>
+        </div>
+        <AdminRealisations />
       </section>
 
       <section className="mt-12">

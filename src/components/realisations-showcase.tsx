@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type RealisationItem = {
@@ -19,12 +20,68 @@ type RealisationsShowcaseProps = {
 export function RealisationsShowcase({ items }: RealisationsShowcaseProps) {
   const showcaseRef = useRef<HTMLDivElement>(null);
   const copyTimeoutRef = useRef<number | null>(null);
+  const [galleryItems, setGalleryItems] = useState(items);
   const [activeIndex, setActiveIndex] = useState(0);
   const [copyVisible, setCopyVisible] = useState(true);
   const [isInView, setIsInView] = useState(false);
   const [isPageVisible, setIsPageVisible] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/realisations", { signal: controller.signal, cache: "no-store" })
+      .then(async (response) => {
+        const result: unknown = await response.json();
+        if (!response.ok) {
+          throw new Error(
+            typeof result === "object" &&
+              result !== null &&
+              "error" in result &&
+              typeof result.error === "string"
+              ? result.error
+              : "Impossible de charger les réalisations supplémentaires.",
+          );
+        }
+        if (
+          typeof result !== "object" ||
+          result === null ||
+          !("realisations" in result) ||
+          !Array.isArray(result.realisations)
+        ) {
+          throw new Error("La réponse des réalisations est invalide.");
+        }
+
+        const addedItems = result.realisations.filter(
+          (item): item is RealisationItem =>
+            typeof item === "object" &&
+            item !== null &&
+            "title" in item &&
+            typeof item.title === "string" &&
+            "category" in item &&
+            typeof item.category === "string" &&
+            "description" in item &&
+            typeof item.description === "string" &&
+            "image" in item &&
+            typeof item.image === "string" &&
+            "imageAlt" in item &&
+            typeof item.imageAlt === "string",
+        );
+        setGalleryItems([...items, ...addedItems]);
+        setLoadError(null);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : "Impossible de charger les réalisations supplémentaires.",
+        );
+      });
+
+    return () => controller.abort();
+  }, [items]);
 
   const changeSlide = useCallback(
     (nextIndex: number) => {
@@ -34,12 +91,12 @@ export function RealisationsShowcase({ items }: RealisationsShowcaseProps) {
 
       setCopyVisible(false);
       copyTimeoutRef.current = window.setTimeout(() => {
-        setActiveIndex((nextIndex + items.length) % items.length);
+        setActiveIndex((nextIndex + galleryItems.length) % galleryItems.length);
         setCopyVisible(true);
         copyTimeoutRef.current = null;
       }, 160);
     },
-    [items.length],
+    [galleryItems.length],
   );
 
   useEffect(() => {
@@ -95,102 +152,145 @@ export function RealisationsShowcase({ items }: RealisationsShowcaseProps) {
     changeSlide(activeIndex + direction);
   };
 
-  const activeItem = items[activeIndex];
+  const activeItem = galleryItems[activeIndex];
 
   return (
-    <div
-      ref={showcaseRef}
-      role="region"
-      aria-label="Réalisations — diaporama"
-      className="mt-10 md:hidden"
-    >
+    <>
       <div
-        className="relative aspect-4/3 overflow-hidden rounded-[1.7rem] border border-[rgba(8,7,6,0.08)] bg-[#e8dfd1] shadow-[0_18px_40px_rgba(8,7,6,0.08)]"
-        onPointerDown={() => setIsPaused(true)}
+        ref={showcaseRef}
+        role="region"
+        aria-label="Réalisations — diaporama"
+        className="mt-10 md:hidden"
       >
-        {items.map((item, index) => (
-          <Image
-            key={item.image}
-            src={item.image}
-            alt={index === activeIndex ? item.imageAlt : ""}
-            fill
-            sizes="(max-width: 767px) calc(100vw - 32px), 0px"
-            className={`object-cover transition-opacity duration-800 ease-in-out motion-reduce:duration-0 ${
-              index === activeIndex ? "opacity-100" : "pointer-events-none opacity-0"
-            }`}
-            aria-hidden={index !== activeIndex}
-            priority={index === 0}
-          />
-        ))}
-
-        <div className="absolute left-4 top-4 rounded-full border border-white/50 bg-black/30 px-3 py-1.5 text-[0.62rem] font-medium uppercase tracking-[0.18em] text-white backdrop-blur-sm">
-          {activeItem.category}
-        </div>
-
-        <div className="absolute inset-x-4 bottom-4 flex items-center justify-between">
-          <button
-            type="button"
-            aria-label="Réalisation précédente"
-            onClick={() => moveSlide(-1)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/50 bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-          >
-            <ChevronLeft aria-hidden="true" className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            aria-label="Réalisation suivante"
-            onClick={() => moveSlide(1)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/50 bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-          >
-            <ChevronRight aria-hidden="true" className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-5 flex items-start justify-between gap-4">
         <div
-          className={`transition-opacity duration-300 motion-reduce:duration-0 ${
-            copyVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className="relative aspect-4/3 overflow-hidden rounded-[1.7rem] border border-[rgba(8,7,6,0.08)] bg-[#e8dfd1] shadow-[0_18px_40px_rgba(8,7,6,0.08)]"
+          onPointerDown={() => setIsPaused(true)}
         >
-          <h3 className="font-serif text-[1.8rem] leading-tight text-foreground">
-            {activeItem.title}
-          </h3>
-          <p className="mt-2 max-w-[34ch] text-sm leading-6 text-muted">
-            {activeItem.description}
-          </p>
-        </div>
-        <button
-          type="button"
-          aria-label={isPaused ? "Reprendre le diaporama" : "Mettre le diaporama en pause"}
-          aria-pressed={isPaused}
-          disabled={prefersReducedMotion}
-          onClick={() => setIsPaused((paused) => !paused)}
-          className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(8,7,6,0.12)] text-foreground transition-colors hover:border-gold hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {isPaused ? (
-            <Play aria-hidden="true" className="h-4 w-4" />
-          ) : (
-            <Pause aria-hidden="true" className="h-4 w-4" />
-          )}
-        </button>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
-        <span className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-muted">
-          {String(activeIndex + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
-        </span>
-        <div className="flex gap-1.5" aria-hidden="true">
-          {items.map((item, index) => (
-            <span
+          {galleryItems.map((item, index) => (
+            <Image
               key={item.image}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                index === activeIndex ? "w-6 bg-gold" : "w-1.5 bg-[rgba(8,7,6,0.2)]"
+              src={item.image}
+              alt={index === activeIndex ? item.imageAlt : ""}
+              fill
+              sizes="(max-width: 767px) calc(100vw - 32px), 0px"
+              className={`object-cover transition-opacity duration-800 ease-in-out motion-reduce:duration-0 ${
+                index === activeIndex ? "opacity-100" : "pointer-events-none opacity-0"
               }`}
+              aria-hidden={index !== activeIndex}
+              priority={index === 0}
             />
           ))}
+
+          <div className="absolute left-4 top-4 rounded-full border border-white/50 bg-black/30 px-3 py-1.5 text-[0.62rem] font-medium uppercase tracking-[0.18em] text-white backdrop-blur-sm">
+            {activeItem.category}
+          </div>
+
+          <div className="absolute inset-x-4 bottom-4 flex items-center justify-between">
+            <button
+              type="button"
+              aria-label="Réalisation précédente"
+              onClick={() => moveSlide(-1)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/50 bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <ChevronLeft aria-hidden="true" className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              aria-label="Réalisation suivante"
+              onClick={() => moveSlide(1)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/50 bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <ChevronRight aria-hidden="true" className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-5 flex items-start justify-between gap-4">
+          <div
+            className={`transition-opacity duration-300 motion-reduce:duration-0 ${
+              copyVisible ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <h3 className="font-serif text-[1.8rem] leading-tight text-foreground">
+              {activeItem.title}
+            </h3>
+            <p className="mt-2 max-w-[34ch] text-sm leading-6 text-muted">
+              {activeItem.description}
+            </p>
+          </div>
+          <button
+            type="button"
+            aria-label={isPaused ? "Reprendre le diaporama" : "Mettre le diaporama en pause"}
+            aria-pressed={isPaused}
+            disabled={prefersReducedMotion}
+            onClick={() => setIsPaused((paused) => !paused)}
+            className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(8,7,6,0.12)] text-foreground transition-colors hover:border-gold hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isPaused ? (
+              <Play aria-hidden="true" className="h-4 w-4" />
+            ) : (
+              <Pause aria-hidden="true" className="h-4 w-4" />
+            )}
+          </button>
+        </div>
+
+        <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
+          <span className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-muted">
+            {String(activeIndex + 1).padStart(2, "0")} /{" "}
+            {String(galleryItems.length).padStart(2, "0")}
+          </span>
+          <div className="flex gap-1.5" aria-hidden="true">
+            {galleryItems.map((item, index) => (
+              <span
+                key={item.image}
+                className={`h-1 rounded-full transition-all duration-300 ${
+                  index === activeIndex ? "w-6 bg-gold" : "w-1.5 bg-[rgba(8,7,6,0.2)]"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+
+      <div className="mt-14 hidden gap-6 md:grid md:grid-cols-2 xl:grid-cols-3">
+        {galleryItems.map((item) => (
+          <article
+            key={item.image}
+            className="group overflow-hidden rounded-4xl border border-[rgba(8,7,6,0.06)] bg-white shadow-[0_18px_40px_rgba(8,7,6,0.04)]"
+          >
+            <div className="relative h-80 overflow-hidden">
+              <Image
+                src={item.image}
+                alt={item.imageAlt}
+                fill
+                sizes="(min-width: 1280px) 389px, (min-width: 768px) calc((100vw - 72px) / 2)"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute left-5 top-5 rounded-full border border-[rgba(244,213,138,0.5)] bg-[rgba(8,7,6,0.28)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.18em] text-background backdrop-blur-sm">
+                {item.category}
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-4 p-6">
+              <div>
+                <h3 className="text-2xl text-foreground">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted">{item.description}</p>
+              </div>
+              <Link
+                href="/devis"
+                aria-label={`Demander un devis pour ${item.title}`}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(8,7,6,0.12)] text-foreground transition-colors hover:border-gold hover:text-gold"
+              >
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </article>
+        ))}
+      </div>
+      {loadError && (
+        <p className="mt-4 text-sm text-muted" role="status">
+          Les projets ajoutés récemment ne peuvent pas être chargés pour le moment.
+        </p>
+      )}
+    </>
   );
 }
