@@ -19,6 +19,9 @@ import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
+const realisationsVideoUrl =
+  "https://res.cloudinary.com/dkd3k6eau/video/upload/w_360,br_500k,q_auto:low,f_mp4/v1794044748/video-PE-for_app_pztsuq.mp4";
+
 const gallery: RealisationItem[] = [
   {
     title: "Scénographie Terracotta",
@@ -240,6 +243,26 @@ export default function Home() {
             />
 
             <RealisationsShowcase items={gallery} />
+
+            <div className="mt-14 border-t border-line pt-10">
+              <div className="mx-auto max-w-xl text-center">
+                <h3 className="font-serif text-3xl text-foreground">PassyEventz en images</h3>
+                <p className="mt-3 text-sm leading-6 text-muted">
+                  Un aperçu vidéo de nos créations et de notre savoir-faire événementiel.
+                </p>
+                <video
+                  src={realisationsVideoUrl}
+                  poster="/images/realisations/scene.webp"
+                  controls
+                  playsInline
+                  preload="metadata"
+                  aria-label="Aperçu vidéo des réalisations PassyEventz"
+                  className="mx-auto mt-6 aspect-[9/16] w-full max-w-sm rounded-[1.7rem] bg-black object-cover shadow-[0_18px_40px_rgba(8,7,6,0.12)]"
+                >
+                  Votre navigateur ne prend pas en charge la lecture vidéo.
+                </video>
+              </div>
+            </div>
           </div>
         </section>
 

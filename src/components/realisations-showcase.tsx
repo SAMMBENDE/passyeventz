@@ -129,14 +129,26 @@ export function RealisationsShowcase({ items }: RealisationsShowcaseProps) {
   }, []);
 
   useEffect(() => {
-    if (!isInView || !isPageVisible || isPaused || prefersReducedMotion) return;
+    if (
+      !isInView ||
+      !isPageVisible ||
+      isPaused ||
+      prefersReducedMotion
+    ) return;
 
     const timeout = window.setTimeout(() => {
       changeSlide(activeIndex + 1);
     }, 4500);
 
     return () => window.clearTimeout(timeout);
-  }, [activeIndex, changeSlide, isInView, isPageVisible, isPaused, prefersReducedMotion]);
+  }, [
+    activeIndex,
+    changeSlide,
+    isInView,
+    isPageVisible,
+    isPaused,
+    prefersReducedMotion,
+  ]);
 
   useEffect(
     () => () => {
@@ -168,7 +180,7 @@ export function RealisationsShowcase({ items }: RealisationsShowcaseProps) {
         >
           {galleryItems.map((item, index) => (
             <Image
-              key={item.image}
+              key={`${item.image}-${index}`}
               src={item.image}
               alt={index === activeIndex ? item.imageAlt : ""}
               fill
@@ -242,7 +254,7 @@ export function RealisationsShowcase({ items }: RealisationsShowcaseProps) {
           <div className="flex gap-1.5" aria-hidden="true">
             {galleryItems.map((item, index) => (
               <span
-                key={item.image}
+                key={`${item.image}-${index}`}
                 className={`h-1 rounded-full transition-all duration-300 ${
                   index === activeIndex ? "w-6 bg-gold" : "w-1.5 bg-[rgba(8,7,6,0.2)]"
                 }`}
@@ -253,9 +265,9 @@ export function RealisationsShowcase({ items }: RealisationsShowcaseProps) {
       </div>
 
       <div className="mt-14 hidden gap-6 md:grid md:grid-cols-2 xl:grid-cols-3">
-        {galleryItems.map((item) => (
+        {galleryItems.map((item, index) => (
           <article
-            key={item.image}
+            key={`${item.image}-${index}`}
             className="group overflow-hidden rounded-4xl border border-[rgba(8,7,6,0.06)] bg-white shadow-[0_18px_40px_rgba(8,7,6,0.04)]"
           >
             <div className="relative h-80 overflow-hidden">
