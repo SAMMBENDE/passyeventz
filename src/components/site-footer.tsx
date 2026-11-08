@@ -115,12 +115,12 @@ export function SiteFooter() {
               sizes="64px"
               className="mb-4 h-16 w-16 object-contain"
             />
-            <p className="text-[0.68rem] uppercase tracking-[0.28em] text-light-gold">La lettre PassyEventz</p>
+            <p className="text-[0.68rem] uppercase tracking-[0.28em] text-light-gold">La Newsletter PassyEventz</p>
             <h2 className="mt-3 max-w-xl font-serif text-4xl leading-tight text-background sm:text-5xl">
               Une dose d’inspiration, directement dans votre boîte mail.
             </h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-[rgba(255,249,239,0.7)]">
-              Tendances, idées de décoration et coulisses de nos événements — une sélection élégante, occasionnellement.
+              Tendances, inspirations déco et coulisses de nos événements : retrouvez toute l’élégance de l’univers Passyeventz à travers une sélection exclusive.
             </p>
           </div>
 

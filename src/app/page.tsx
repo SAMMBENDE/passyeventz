@@ -257,7 +257,7 @@ export default function Home() {
                   playsInline
                   preload="metadata"
                   aria-label="Aperçu vidéo des réalisations PassyEventz"
-                  className="mx-auto mt-6 aspect-[9/16] w-full max-w-sm rounded-[1.7rem] bg-black object-cover shadow-[0_18px_40px_rgba(8,7,6,0.12)]"
+                  className="mx-auto mt-6 aspect-9/16 w-full max-w-sm rounded-[1.7rem] bg-black object-cover shadow-[0_18px_40px_rgba(8,7,6,0.12)]"
                 >
                   Votre navigateur ne prend pas en charge la lecture vidéo.
                 </video>
@@ -401,7 +401,7 @@ export default function Home() {
           <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_0.8fr] lg:px-8">
             <div>
               <p className="mb-3 text-[0.72rem] uppercase tracking-[0.28em] text-light-gold">Contact</p>
-              <h2 className="font-serif text-5xl leading-none text-background">Discutons de votre prochain projet.</h2>
+              <h2 className="font-serif text-5xl leading-none text-background">Imaginons ensemble votre prochain événement.</h2>
               <p className="mt-5 max-w-xl text-base leading-8 text-[rgba(255,249,239,0.76)]">
                 Que vous prépariez un mariage, une soirée privée ou un événement d’entreprise, notre équipe vous accompagne avec une attention particulière à chaque détail.
               </p>
