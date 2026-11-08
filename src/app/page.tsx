@@ -368,7 +368,7 @@ export default function Home() {
                 className="mb-6 h-20 w-20 rounded-2xl border border-[rgba(214,163,77,0.2)] shadow-[0_12px_30px_rgba(8,7,6,0.12)]"
               />
               <p className="mb-3 text-[0.72rem] uppercase tracking-[0.28em] text-gold">Demande de devis</p>
-              <h2 className="font-serif text-5xl leading-none text-foreground">Créer un événement qui marque les esprits.</h2>
+              <h2 className="font-serif text-5xl leading-none text-foreground">Un Événement à Votre Image</h2>
               <p className="mt-5 max-w-xl text-base leading-8 text-muted">
                 Partagez votre vision, votre date et vos besoins, et nous vous proposerons une ambiance pensée pour votre événement avec une réponse claire et élégante.
               </p>
@@ -401,7 +401,7 @@ export default function Home() {
           <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_0.8fr] lg:px-8">
             <div>
               <p className="mb-3 text-[0.72rem] uppercase tracking-[0.28em] text-light-gold">Contact</p>
-              <h2 className="font-serif text-5xl leading-none text-background">Imaginons ensemble votre prochain événement.</h2>
+              <h2 className="font-serif text-5xl leading-none text-background">Pour votre prochain événement.</h2>
               <p className="mt-5 max-w-xl text-base leading-8 text-[rgba(255,249,239,0.76)]">
                 Que vous prépariez un mariage, une soirée privée ou un événement d’entreprise, notre équipe vous accompagne avec une attention particulière à chaque détail.
               </p>
