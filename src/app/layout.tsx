@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { CookieConsent } from "@/components/cookie-consent";
 import "./globals.css";
 
 const displayFont = Cormorant_Garamond({
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body suppressHydrationWarning className="min-h-full bg-background text-foreground">
         {children}
+        <CookieConsent />
       </body>
     </html>
   );

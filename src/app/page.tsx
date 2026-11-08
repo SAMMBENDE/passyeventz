@@ -423,8 +423,8 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="text-[0.68rem] uppercase tracking-[0.2em] text-light-gold">Site internet</div>
-                  <a href="https://www.passyeventz.com" target="_blank" rel="noreferrer" className="mt-2 inline-block text-lg text-background transition-colors hover:text-light-gold">
-                    www.passyeventz.com
+                  <a href="mailto:contact@passyeventz.com" className="mt-2 inline-block text-lg text-background transition-colors hover:text-light-gold">
+                    contact@passyeventz.com
                   </a>
                 </div>
               </div>

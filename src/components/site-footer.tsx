@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 
+import { cookiePreferencesEvent } from "@/lib/cookie-preferences";
+
 const quickLinks = [
   { label: "Accueil", href: "/#accueil" },
   { label: "À propos", href: "/#about" },
@@ -14,9 +16,11 @@ const quickLinks = [
 ];
 
 const legalLinks = [
-  { label: "Politique de confidentialité", subject: "Politique de confidentialité" },
-  { label: "Conditions d’utilisation", subject: "Conditions d’utilisation" },
-  { label: "Politique de cookies", subject: "Politique de cookies" },
+  { label: "Mentions légales", href: "/legal/mentions-legales" },
+  { label: "Politique de confidentialité", href: "/legal/politique-de-confidentialite" },
+  { label: "Conditions générales d’utilisation", href: "/legal/conditions-generales-utilisation" },
+  { label: "Conditions générales de location", href: "/legal/conditions-generales-location" },
+  { label: "Politique de cookies", href: "/legal/politique-de-cookies" },
 ];
 
 const socialLinks = [
@@ -196,30 +200,57 @@ export function SiteFooter() {
             <ul className="mt-5 space-y-3">
               {legalLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={`mailto:contact@passyeventz.com?subject=${encodeURIComponent(`Demande — ${link.subject}`)}`}
+                  <Link
+                    href={link.href}
                     className="text-sm text-[rgba(255,249,239,0.68)] transition-colors hover:text-light-gold"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new Event(cookiePreferencesEvent))}
+                  className="text-left text-sm text-[rgba(255,249,239,0.68)] transition-colors hover:text-light-gold"
+                >
+                  Gérer mes cookies
+                </button>
+              </li>
             </ul>
           </nav>
 
           <div>
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-light-gold">Nos partenaires</h2>
             <ul className="mt-5 space-y-3 text-sm text-[rgba(255,249,239,0.68)]">
-              <li>Mboa Cook</li>
-              <li>Afrobizz</li>
+              <li>
+                <a
+                  href="https://www.facebook.com/p/Mboa-Cook-100090457417614/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-light-gold"
+                >
+                  Mboa Cook
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://afrobizz.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-light-gold"
+                >
+                  Afrobizz
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
         <div className="flex flex-col gap-3 pt-6 text-xs text-[rgba(255,249,239,0.5)] sm:flex-row sm:items-center sm:justify-between">
           <span>© PassyEventz. Tous droits réservés.</span>
-          <a href="https://www.passyeventz.com" target="_blank" rel="noreferrer" className="transition-colors hover:text-light-gold">
-            www.passyeventz.com
+          <a href="mailto:contact@passyeventz.com" className="transition-colors hover:text-light-gold">
+            contact@passyeventz.com
           </a>
         </div>
       </div>
